@@ -31,11 +31,10 @@ class Pagination implements \Iterator, \Countable
     /** @var string */
     private $type;
 
-    private function initPages(int $maxPages)
+    private function initPages()
     {
         $this->page = 1;
-        $this->maxPages = $maxPages;
-        for ($page = $this->page; $page <= $maxPages; $page++) {
+        for ($page = $this->page; $page <= $this->maxPages; $page++) {
             $this->list[$page] = Factory::create([
                 'page' => $page,
                 'name' => $this->name,
@@ -50,7 +49,7 @@ class Pagination implements \Iterator, \Countable
         $this->request = $request;
         $this->router = $router;
         $this->init($options);
-        $this->initPages($this->maxPages);
+        $this->initPages();
     }
 
     private function init(array $options)
