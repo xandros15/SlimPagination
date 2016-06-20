@@ -11,7 +11,7 @@ namespace Xandros15\SlimPagination;
 use Slim\Http\Request;
 use Slim\Router;
 
-class Pagination implements \Iterator, \Countable
+class Pagination
 {
 
     const QUERY_PARAM = 1;
@@ -23,25 +23,26 @@ class Pagination implements \Iterator, \Countable
     /** @var string */
     private $name;
     /** @var int */
-    private $maxPages;
-    /** @var int */
-    private $page;
-    /** @var array */
-    private $list;
+    private $max;
     /** @var string */
     private $type;
+    /** @var Iterator */
+    private $iterator;
+
+    public function getIterator()
+    {
+        return $this->iterator;
+    }
 
     private function initPages()
     {
-        $this->page = 1;
-        for ($page = $this->page; $page <= $this->maxPages; $page++) {
-            $this->list[$page] = Factory::create([
-                'page' => $page,
-                'name' => $this->name,
-                'router' => $this->router,
-                'request' => $this->request,
-            ], $this->type);
-        }
+        $this->iterator = new Iterator([
+            'name' => $this->name,
+            'router' => $this->router,
+            'request' => $this->request,
+            'type' => $this->type,
+            'max' => $this->max
+        ]);
     }
 
     public function __construct(Request $request, Router $router, array $options)
@@ -55,14 +56,15 @@ class Pagination implements \Iterator, \Countable
     private function init(array $options)
     {
         $default = [
-            'maxPages' => 1,
+            'max' => 1,
             'name' => 'page',
             'type' => self::QUERY_PARAM
         ];
+
         $options = array_merge($default, $options);
 
-        if ($options['maxPages'] <= 0) {
-            throw new \InvalidArgumentException('maxPages must be int and greater than 0');
+        if ($options['max'] <= 0) {
+            throw new \InvalidArgumentException('max must be int and greater than 0');
         }
 
         if (!is_scalar($options['name']) && !method_exists($options['name'], '__toString')) {
@@ -70,7 +72,7 @@ class Pagination implements \Iterator, \Countable
         }
 
 
-        $this->maxPages = $options['maxPages'];
+        $this->max = $options['max'];
         $this->name = $options['name'];
         $this->type = $options['type'];
 
@@ -79,103 +81,26 @@ class Pagination implements \Iterator, \Countable
 
     public function isCreatable() : bool
     {
-        return $this->count() > 1;
+        return $this->iterator->count() > 1;
     }
 
     public function getPrevious() : PageInterface
     {
-        return $this->list[max($this->page - 1, 1)];
+        return $this->iterator->get(1);
     }
 
     public function getNext() : PageInterface
     {
-        return $this->list[min($this->page + 1, $this->maxPages)];
+        return $this->iterator->get(1);
     }
 
     public function first() : PageInterface
     {
-        return $this->list[1];
+        return $this->iterator->get(1);
     }
 
     public function last() : PageInterface
     {
-        return $this->list[$this->maxPages];
-    }
-    /**
-     * Part of Iterator
-     */
-
-    /**
-     * Return the current element
-     * @link http://php.net/manual/en/iterator.current.php
-     * @return mixed Can return any type.
-     * @since 5.0.0
-     */
-    public function current()
-    {
-        return $this->list[$this->page];
-    }
-
-    /**
-     * Move forward to next element
-     * @link http://php.net/manual/en/iterator.next.php
-     * @return void Any returned value is ignored.
-     * @since 5.0.0
-     */
-    public function next()
-    {
-        $this->page++;
-    }
-
-    /**
-     * Return the key of the current element
-     * @link http://php.net/manual/en/iterator.key.php
-     * @return mixed scalar on success, or null on failure.
-     * @since 5.0.0
-     */
-    public function key()
-    {
-        return $this->page;
-    }
-
-    /**
-     * Checks if current position is valid
-     * @link http://php.net/manual/en/iterator.valid.php
-     * @return boolean The return value will be casted to boolean and then evaluated.
-     * Returns true on success or false on failure.
-     * @since 5.0.0
-     */
-    public function valid()
-    {
-        return isset($this->list[$this->page]);
-    }
-
-    /**
-     * Rewind the Iterator to the first element
-     * @link http://php.net/manual/en/iterator.rewind.php
-     * @return void Any returned value is ignored.
-     * @since 5.0.0
-     */
-    public function rewind()
-    {
-        $this->page = 1;
-    }
-
-    /**
-     * Part of countable
-     */
-
-    /**
-     * Count elements of an object
-     * @link http://php.net/manual/en/countable.count.php
-     * @return int The custom count as an integer.
-     * </p>
-     * <p>
-     * The return value is cast to an integer.
-     * @since 5.1.0
-     */
-    public function count()
-    {
-        return $this->maxPages;
+        return $this->iterator->get($this->max);
     }
 }
