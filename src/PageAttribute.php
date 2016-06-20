@@ -12,23 +12,21 @@ class PageAttribute extends Page implements PageInterface
 {
     public function getPageName() : string
     {
-        return $this->params['page'];
+        return $this->page;
     }
 
     public function pathFor() : string
     {
-        $data = $this->params['request']->getAttribute('route')->getArguments();
-        return $this->params['router']->pathFor(
-            $this->params['request']->getAttribute('route')->getName(),
-            array_merge($data, [$this->params['name'] => $this->params['page']]),
-            $this->params['request']->getQueryParams()
+        $data = $this->request->getAttribute('route')->getArguments();
+        return $this->router->pathFor(
+            $this->request->getAttribute('route')->getName(),
+            array_merge($data, [$this->name => $this->page]),
+            $this->request->getQueryParams()
         );
     }
 
     public function isCurrent() : bool
     {
-        return $this->params['page'] == $this->params['request']
-            ->getAttribute('route')
-            ->getArgument($this->params['name'], 1);
+        return $this->page == $this->request->getAttribute('route')->getArgument($this->name, 1);
     }
 }

@@ -8,30 +8,28 @@
 
 namespace Xandros15\SlimPagination;
 
-use Slim\Http\Request;
-
 class PageQuery extends Page implements PageInterface
 {
 
     public function getPageName() : string
     {
-        return $this->params['page'];
+        return $this->page;
     }
 
     public function pathFor() : string
     {
-        $queryParams = array_merge($this->params['request']->getQueryParams(), [
-            $this->params['name'] => $this->params['page']
+        $queryParams = array_merge($this->request->getQueryParams(), [
+            $this->name => $this->page
         ]);
-        return $this->params['router']->pathFor(
-            $this->params['request']->getAttribute('route')->getName(),
-            $this->params['request']->getAttributes(),
+        return $this->router->pathFor(
+            $this->request->getAttribute('route')->getName(),
+            $this->request->getAttributes(),
             $queryParams
         );
     }
 
     public function isCurrent() : bool
     {
-        return $this->params['page'] == max(1, $this->params['request']->getQueryParam($this->params['name'], 1));
+        return $this->page == max(1, $this->request->getQueryParam($this->name, 1));
     }
 }
