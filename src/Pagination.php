@@ -29,6 +29,8 @@ class Pagination
     private $max;
     /** @var string */
     private $type;
+    /** @var int */
+    private $current;
     /** @var Iterator */
     private $iterator;
 
@@ -78,6 +80,7 @@ class Pagination
         $this->max = $options[self::OPT_MAX];
         $this->name = $options[self::OPT_NAME];
         $this->type = $options[self::OPT_TYPE];
+        $this->current = $this->getCurrentPage();
 
     }
 
@@ -87,14 +90,14 @@ class Pagination
         return $this->iterator->count() > 1;
     }
 
-    public function getPrevious() : PageInterface
+    public function previous() : PageInterface
     {
-        return $this->iterator->get(1);
+        return $this->iterator->get(max($this->current - 1, 1));
     }
 
-    public function getNext() : PageInterface
+    public function next() : PageInterface
     {
-        return $this->iterator->get(1);
+        return $this->iterator->get(min($this->current + 1, $this->max));
     }
 
     public function first() : PageInterface
@@ -105,5 +108,16 @@ class Pagination
     public function last() : PageInterface
     {
         return $this->iterator->get($this->max);
+    }
+
+    private function getCurrentPage() : int
+    {
+        switch ($this->type) {
+            case self::ATTRIBUTE:
+                return $this->request->getAttribute($this->name, 1);
+            case self::QUERY_PARAM:
+                return $this->request->getQueryParam($this->name, 1);
+        }
+        throw new \InvalidArgumentException('Wrong type of page');
     }
 }
