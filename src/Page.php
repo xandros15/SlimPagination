@@ -30,8 +30,8 @@ abstract class Page
 
     public function __get(string $name)
     {
-        if (isset($params[$name])) {
-            return $params[$name];
+        if (isset($this->params[$name])) {
+            return $this->params[$name];
         }
         throw new \InvalidArgumentException('Property `' . __CLASS__ . '::' . $name . '` doesn\'t exist');
     }
