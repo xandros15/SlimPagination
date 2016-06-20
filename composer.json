@@ -1,0 +1,22 @@
+{
+    "name": "xandros15/slim-pagination",
+    "description": "simple pagination for slim3",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "xandros",
+            "email": "xandros92@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "autoload": {
+        "psr-4": {
+            "Xandros15\\SlimPagination\\": "src"
+        }
+    },
+    "require": {
+        "php": ">=7.0.0",
+        "slim/slim": "^3.0"
+    }
+}
