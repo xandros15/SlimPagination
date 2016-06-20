@@ -14,6 +14,9 @@ use Slim\Router;
 class Pagination
 {
 
+    const OPT_MAX = 'max';
+    const OPT_NAME = 'name';
+    const OPT_TYPE = 'type';
     const QUERY_PARAM = 1;
     const ATTRIBUTE = 2;
     /** @var Request */
@@ -56,25 +59,25 @@ class Pagination
     private function init(array $options)
     {
         $default = [
-            'max' => 1,
-            'name' => 'page',
-            'type' => self::QUERY_PARAM
+            self::OPT_MAX => 1,
+            self::OPT_NAME => 'page',
+            self::OPT_TYPE => self::QUERY_PARAM
         ];
 
         $options = array_merge($default, $options);
 
-        if ($options['max'] <= 0) {
-            throw new \InvalidArgumentException('max must be int and greater than 0');
+        if ($options[self::OPT_MAX] <= 0) {
+            throw new \InvalidArgumentException('option `max` must be int and greater than 0');
         }
 
-        if (!is_scalar($options['name']) && !method_exists($options['name'], '__toString')) {
-            throw new \InvalidArgumentException('name must be string or instance of object with __toString method');
+        if (!is_scalar($options[self::OPT_NAME]) && !method_exists($options[self::OPT_NAME], '__toString')) {
+            throw new \InvalidArgumentException('option `name` must be string or instance of object with __toString method');
         }
 
 
-        $this->max = $options['max'];
-        $this->name = $options['name'];
-        $this->type = $options['type'];
+        $this->max = $options[self::OPT_MAX];
+        $this->name = $options[self::OPT_NAME];
+        $this->type = $options[self::OPT_TYPE];
 
     }
 
