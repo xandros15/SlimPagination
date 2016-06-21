@@ -19,7 +19,7 @@ class PageQuery extends Page implements PageInterface
     public function pathFor() : string
     {
         $queryParams = array_merge($this->request->getQueryParams(), [
-            $this->name => $this->page
+            $this->paramName => $this->page
         ]);
         return $this->router->pathFor(
             $this->request->getAttribute('route')->getName(),

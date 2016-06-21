@@ -20,7 +20,7 @@ class PageAttribute extends Page implements PageInterface
         $data = $this->request->getAttribute('route')->getArguments();
         return $this->router->pathFor(
             $this->request->getAttribute('route')->getName(),
-            array_merge($data, [$this->name => $this->page]),
+            array_merge($data, [$this->paramName => $this->page]),
             $this->request->getQueryParams()
         );
     }
