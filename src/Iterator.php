@@ -26,6 +26,7 @@ class Iterator implements \Iterator, \Countable
     {
         $this->page = 1;
         $this->max = $data['max'];
+        $show = $data[Pagination::OPT_SHOW];
         for ($page = $this->page; $page <= $data['max']; $page++) {
             $this->list[$page] = Factory::create([
                 'page' => $page,

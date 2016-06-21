@@ -17,6 +17,7 @@ class Pagination
     const OPT_MAX = 'max';
     const OPT_NAME = 'name';
     const OPT_TYPE = 'type';
+    const OPT_SHOW = 'show';
     const QUERY_PARAM = 1;
     const ATTRIBUTE = 2;
     /** @var Request */
@@ -33,6 +34,8 @@ class Pagination
     private $current;
     /** @var Iterator */
     private $iterator;
+    /** @var array */
+    private $options;
 
     public function __construct(Request $request, Router $router, array $options)
     {
@@ -46,6 +49,7 @@ class Pagination
     {
         $default = [
             self::OPT_MAX => 1,
+            self::OPT_SHOW => 2,
             self::OPT_NAME => 'page',
             self::OPT_TYPE => self::QUERY_PARAM
         ];
@@ -60,10 +64,15 @@ class Pagination
             throw new \InvalidArgumentException('option `name` must be string or instance of object with __toString method');
         }
 
+        if ($options[self::OPT_SHOW] < 2) {
+            throw new \InvalidArgumentException('option `show` must be int and greater or equal than 2');
+        }
+
 
         $this->max = $options[self::OPT_MAX];
         $this->name = $options[self::OPT_NAME];
         $this->type = $options[self::OPT_TYPE];
+        $this->options = $options;
         $this->current = $this->getCurrentPage();
 
     }
@@ -87,7 +96,8 @@ class Pagination
             'request' => $this->request,
             'type' => $this->type,
             'max' => $this->max,
-            'current' => $this->current
+            'current' => $this->current,
+            'show' => $this->options[self::OPT_SHOW]
         ]);
     }
 
