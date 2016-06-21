@@ -39,6 +39,11 @@ class Iterator implements \Iterator, \Countable
         }
     }
 
+    public function toArray()
+    {
+        return $this->list;
+    }
+
     public function get(int $key)
     {
         if ($this->has($key)) {
