@@ -30,6 +30,6 @@ class PageQuery extends Page implements PageInterface
 
     public function isCurrent() : bool
     {
-        return $this->page == max(1, $this->request->getQueryParam($this->name, 1));
+        return $this->page == $this->current;
     }
 }

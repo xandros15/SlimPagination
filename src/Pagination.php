@@ -34,22 +34,6 @@ class Pagination
     /** @var Iterator */
     private $iterator;
 
-    public function getIterator()
-    {
-        return $this->iterator;
-    }
-
-    private function initPages()
-    {
-        $this->iterator = new Iterator([
-            'name' => $this->name,
-            'router' => $this->router,
-            'request' => $this->request,
-            'type' => $this->type,
-            'max' => $this->max
-        ]);
-    }
-
     public function __construct(Request $request, Router $router, array $options)
     {
         $this->request = $request;
@@ -84,6 +68,33 @@ class Pagination
 
     }
 
+    private function getCurrentPage() : int
+    {
+        switch ($this->type) {
+            case self::ATTRIBUTE:
+                return $this->request->getAttribute($this->name, 1);
+            case self::QUERY_PARAM:
+                return $this->request->getQueryParam($this->name, 1);
+        }
+        throw new \InvalidArgumentException('Wrong type of page');
+    }
+
+    private function initPages()
+    {
+        $this->iterator = new Iterator([
+            'name' => $this->name,
+            'router' => $this->router,
+            'request' => $this->request,
+            'type' => $this->type,
+            'max' => $this->max,
+            'current' => $this->current
+        ]);
+    }
+
+    public function getIterator()
+    {
+        return $this->iterator;
+    }
 
     public function isCreatable() : bool
     {
@@ -108,16 +119,5 @@ class Pagination
     public function last() : PageInterface
     {
         return $this->iterator->get($this->max);
-    }
-
-    private function getCurrentPage() : int
-    {
-        switch ($this->type) {
-            case self::ATTRIBUTE:
-                return $this->request->getAttribute($this->name, 1);
-            case self::QUERY_PARAM:
-                return $this->request->getQueryParam($this->name, 1);
-        }
-        throw new \InvalidArgumentException('Wrong type of page');
     }
 }

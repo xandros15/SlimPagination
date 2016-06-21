@@ -16,6 +16,7 @@ use Slim\Router;
  * @property Router router
  * @property int page
  * @property string name
+ * @property int current
  */
 
 abstract class Page

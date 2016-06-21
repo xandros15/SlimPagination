@@ -27,6 +27,6 @@ class PageAttribute extends Page implements PageInterface
 
     public function isCurrent() : bool
     {
-        return $this->page == $this->request->getAttribute('route')->getArgument($this->name, 1);
+        return $this->page == $this->current;
     }
 }
