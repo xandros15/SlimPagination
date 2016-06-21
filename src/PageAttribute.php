@@ -20,13 +20,13 @@ class PageAttribute extends Page implements PageInterface
         $data = $this->request->getAttribute('route')->getArguments();
         return $this->router->pathFor(
             $this->request->getAttribute('route')->getName(),
-            array_merge($data, [$this->paramName => $this->pageName]),
+            array_merge($data, [$this->paramName => $this->pageNumber]),
             $this->request->getQueryParams()
         );
     }
 
     public function isCurrent() : bool
     {
-        return $this->pageName == $this->current;
+        return $this->pageNumber == $this->current;
     }
 }

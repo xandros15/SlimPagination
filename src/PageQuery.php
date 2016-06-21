@@ -19,7 +19,7 @@ class PageQuery extends Page implements PageInterface
     public function pathFor() : string
     {
         $queryParams = array_merge($this->request->getQueryParams(), [
-            $this->paramName => $this->pageName
+            $this->paramName => $this->pageNumber
         ]);
         return $this->router->pathFor(
             $this->request->getAttribute('route')->getName(),
@@ -30,6 +30,6 @@ class PageQuery extends Page implements PageInterface
 
     public function isCurrent() : bool
     {
-        return $this->pageName == $this->current;
+        return $this->pageNumber == $this->current;
     }
 }
