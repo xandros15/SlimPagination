@@ -12,7 +12,7 @@ class PageAttribute extends Page implements PageInterface
 {
     public function getPageName() : string
     {
-        return $this->page;
+        return $this->pageName;
     }
 
     public function pathFor() : string
@@ -20,13 +20,13 @@ class PageAttribute extends Page implements PageInterface
         $data = $this->request->getAttribute('route')->getArguments();
         return $this->router->pathFor(
             $this->request->getAttribute('route')->getName(),
-            array_merge($data, [$this->paramName => $this->page]),
+            array_merge($data, [$this->paramName => $this->pageName]),
             $this->request->getQueryParams()
         );
     }
 
     public function isCurrent() : bool
     {
-        return $this->page == $this->current;
+        return $this->pageName == $this->current;
     }
 }

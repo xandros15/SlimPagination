@@ -29,7 +29,7 @@ class Iterator implements \Iterator, \Countable
         $show = $data['show'];
         for ($page = $this->page; $page < $data['show']; $page++) {
             $this->list[$page] = Factory::create([
-                'page' => $page + 1,
+                'pageName' => $page + 1,
                 'paramName' => $data['name'],
                 'router' => $data['router'],
                 'request' => $data['request'],

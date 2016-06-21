@@ -14,7 +14,7 @@ use Slim\Router;
 /**
  * @property Request request
  * @property Router router
- * @property int page
+ * @property string pageName
  * @property string paramName
  * @property int current
  */
