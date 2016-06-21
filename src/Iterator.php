@@ -32,13 +32,9 @@ class Iterator implements \Iterator, \Countable
                 'name' => $data['name'],
                 'router' => $data['router'],
                 'request' => $data['request'],
-            ], $data['type']);
+                Pagination::OPT_TYPE => $data['type']
+            ]);
         }
-    }
-
-    public function has($key)
-    {
-        return isset($this->list[$key]);
     }
 
     public function get(int $key)
@@ -47,6 +43,11 @@ class Iterator implements \Iterator, \Countable
             return $this->list[$key];
         }
         throw new \InvalidArgumentException("The element doesn't exist. `$key` given.");
+    }
+
+    public function has($key)
+    {
+        return isset($this->list[$key]);
     }
     /**
      * Part of Iterator
