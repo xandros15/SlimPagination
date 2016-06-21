@@ -24,12 +24,12 @@ class Iterator implements \Iterator, \Countable
      */
     public function __construct($data)
     {
-        $this->page = 1;
-        $this->max = $data['max'];
+        $this->page = 0;
+        $this->max = $data['show'];
         $show = $data['show'];
-        for ($page = $this->page; $page <= $data['max']; $page++) {
+        for ($page = $this->page; $page < $data['show']; $page++) {
             $this->list[$page] = Factory::create([
-                'page' => $page,
+                'page' => $page + 1,
                 'paramName' => $data['name'],
                 'router' => $data['router'],
                 'request' => $data['request'],
@@ -108,7 +108,7 @@ class Iterator implements \Iterator, \Countable
      */
     public function rewind()
     {
-        $this->page = 1;
+        $this->page = 0;
     }
 
     /**
@@ -126,6 +126,6 @@ class Iterator implements \Iterator, \Countable
      */
     public function count()
     {
-        return $this->max;
+        return count($this->list);
     }
 }
