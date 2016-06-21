@@ -24,12 +24,6 @@ class Pagination
     private $request;
     /** @var Router */
     private $router;
-    /** @var string */
-    private $name;
-    /** @var int */
-    private $max;
-    /** @var string */
-    private $type;
     /** @var int */
     private $current;
     /** @var Iterator */
@@ -68,10 +62,6 @@ class Pagination
             throw new \InvalidArgumentException('option `show` must be int and greater or equal than 2');
         }
 
-
-        $this->max = $options[self::OPT_MAX];
-        $this->name = $options[self::OPT_NAME];
-        $this->type = $options[self::OPT_TYPE];
         $this->options = $options;
         $this->current = $this->getCurrentPage();
 
@@ -79,11 +69,11 @@ class Pagination
 
     private function getCurrentPage() : int
     {
-        switch ($this->type) {
+        switch ($this->options[self::OPT_TYPE]) {
             case self::ATTRIBUTE:
-                return $this->request->getAttribute($this->name, 1);
+                return $this->request->getAttribute($this->options[self::OPT_NAME], 1);
             case self::QUERY_PARAM:
-                return $this->request->getQueryParam($this->name, 1);
+                return $this->request->getQueryParam($this->options[self::OPT_NAME], 1);
         }
         throw new \InvalidArgumentException('Wrong type of page');
     }
@@ -91,13 +81,13 @@ class Pagination
     private function initPages()
     {
         $this->iterator = new Iterator([
-            'name' => $this->name,
+            'name' => $this->options[self::OPT_NAME],
             'router' => $this->router,
             'request' => $this->request,
-            'type' => $this->type,
-            'max' => $this->max,
+            'max' => $this->options[self::OPT_MAX],
             'current' => $this->current,
-            'show' => $this->options[self::OPT_SHOW]
+            'show' => $this->options[self::OPT_SHOW],
+            'type' => $this->options[self::OPT_TYPE],
         ]);
     }
 
@@ -118,7 +108,7 @@ class Pagination
 
     public function next() : PageInterface
     {
-        return $this->iterator->get(min($this->current + 1, $this->max));
+        return $this->iterator->get(min($this->current + 1, $this->options[self::OPT_MAX]));
     }
 
     public function first() : PageInterface
@@ -128,6 +118,6 @@ class Pagination
 
     public function last() : PageInterface
     {
-        return $this->iterator->get($this->max);
+        return $this->iterator->get($this->options[self::OPT_MAX]);
     }
 }

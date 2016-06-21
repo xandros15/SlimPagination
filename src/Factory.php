@@ -13,7 +13,9 @@ class Factory
 
     public static function create(array $params) : PageInterface
     {
-        switch ($params[Pagination::OPT_TYPE]) {
+        $type = $params['type'];
+        unset($params['type']);
+        switch ($type) {
             case Pagination::QUERY_PARAM:
                 return new PageQuery($params);
             case Pagination::ATTRIBUTE:

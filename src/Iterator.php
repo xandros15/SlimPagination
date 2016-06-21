@@ -34,7 +34,7 @@ class Iterator implements \Iterator, \Countable
                 'router' => $data['router'],
                 'request' => $data['request'],
                 'current' => $data['current'],
-                Pagination::OPT_TYPE => $data['type']
+                'type' => $data['type']
             ]);
         }
     }
