@@ -16,11 +16,11 @@ class Factory
         $type = $params['type'];
         unset($params['type']);
         switch ($type) {
-            case Pagination::QUERY_PARAM:
+            case Page::QUERY_PARAM:
                 return new PageQuery($params);
-            case Pagination::ATTRIBUTE:
+            case Page::ATTRIBUTE:
                 return new PageAttribute($params);
-            case Pagination::EMPTY:
+            case Page::EMPTY:
                 return new PageEmpty($params);
         }
 

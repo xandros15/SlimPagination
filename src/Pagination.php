@@ -18,9 +18,6 @@ class Pagination
     const OPT_NAME = 'name';
     const OPT_TYPE = 'type';
     const OPT_SHOW = 'show';
-    const QUERY_PARAM = 1;
-    const ATTRIBUTE = 2;
-    const EMPTY = 3;
     /** @var Request */
     private $request;
     /** @var Router */
@@ -46,7 +43,7 @@ class Pagination
             self::OPT_MAX => 1,
             self::OPT_SHOW => 2,
             self::OPT_NAME => 'page',
-            self::OPT_TYPE => self::QUERY_PARAM
+            self::OPT_TYPE => Page::QUERY_PARAM
         ];
 
         $options = array_merge($default, $options);
@@ -71,9 +68,9 @@ class Pagination
     private function getCurrentPage() : int
     {
         switch ($this->options[self::OPT_TYPE]) {
-            case self::ATTRIBUTE:
+            case Page::ATTRIBUTE:
                 return $this->request->getAttribute($this->options[self::OPT_NAME], 1);
-            case self::QUERY_PARAM:
+            case Page::QUERY_PARAM:
                 return $this->request->getQueryParam($this->options[self::OPT_NAME], 1);
         }
         throw new \InvalidArgumentException('Wrong type of page');

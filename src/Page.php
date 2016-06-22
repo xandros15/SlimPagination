@@ -22,6 +22,9 @@ use Slim\Router;
 
 abstract class Page
 {
+    const QUERY_PARAM = 1;
+    const ATTRIBUTE = 2;
+    const EMPTY = 3;
     /** @var array */
     private $params;
 
