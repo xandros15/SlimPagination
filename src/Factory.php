@@ -20,6 +20,8 @@ class Factory
                 return new PageQuery($params);
             case Pagination::ATTRIBUTE:
                 return new PageAttribute($params);
+            case Pagination::EMPTY:
+                return new PageEmpty($params);
         }
 
         throw new \InvalidArgumentException('Wrong type of page');

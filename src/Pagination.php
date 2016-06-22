@@ -20,6 +20,7 @@ class Pagination
     const OPT_SHOW = 'show';
     const QUERY_PARAM = 1;
     const ATTRIBUTE = 2;
+    const EMPTY = 3;
     /** @var Request */
     private $request;
     /** @var Router */
