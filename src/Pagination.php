@@ -8,7 +8,6 @@
 
 namespace Xandros15\SlimPagination;
 
-use Slim\Collection;
 use Slim\Http\Request;
 use Slim\Router;
 
@@ -29,21 +28,23 @@ class Pagination implements \IteratorAggregate
     private $router;
     /** @var int */
     private $current;
-    /** @var Collection */
-    private $iterator;
+    /** @var Slider */
+    private $slider;
     /** @var array */
     private $options;
-    private $start;
-    private $end;
 
     public function __construct(Request $request, Router $router, array $options)
     {
-        $this->iterator = new Collection();
         $this->router = $router;
         $this->init($options);
         $this->initRequest($request);
-        $this->setStartEnd();
-        $this->compile();
+        $this->slider = new Slider([
+            'router' => $this->router,
+            'query' => $this->query,
+            'attributes' => $this->attributes,
+            'current' => $this->current,
+            'routeName' => $this->routeName
+        ], $this->options);
     }
 
     private function init(array $options)
@@ -91,115 +92,33 @@ class Pagination implements \IteratorAggregate
         throw new \InvalidArgumentException('Wrong type of page');
     }
 
-    private function setStartEnd()
-    {
-        $offset = (int) ($this->options[self::OPT_PER] / 2.1);
-        $start = $this->current - $offset; // current - edge length - 1 'cuz start on 0
-        $end = $this->current + $offset;
-
-        if ($end > $this->options[self::OPT_TOTAL]) { // if wanna edge maximum is very last element
-            $end = $this->options[self::OPT_TOTAL];
-            $start = $this->options[self::OPT_TOTAL] - $this->options[self::OPT_PER] + 1;
-        } elseif ($start < 1) { // if wanna edge minimum is very first element
-            $start = 1;
-            $end = $this->options[self::OPT_PER];
-        }
-        $this->start = $start;
-        $this->end = $end;
-    }
-
-    private function compile()
-    {
-        $data = [
-            'type' => $this->options[self::OPT_TYPE],
-            'paramName' => $this->options[self::OPT_NAME],
-            'router' => $this->router,
-            'query' => $this->query,
-            'attributes' => $this->attributes,
-            'current' => $this->current,
-            'routeName' => $this->routeName
-        ];
-        $list = [];
-
-        for ($current = $this->start; $current <= $this->end; $current++) {
-            $list[] = Factory::create($data + [
-                    'pageNumber' => $current,
-                    'pageName' => $current
-                ]);
-        }
-        $sideControls = $this->createPreviousAndNext($data);
-        $edgeControls = $this->createFirstAndLast($data);
-
-
-        if ($edgeControls['first']->pageNumber < $this->start) {
-            array_unshift($list, $edgeControls['first']);
-        }
-        if ($edgeControls['last']->pageNumber > $this->end) {
-            $list[] = $edgeControls['last'];
-        }
-
-        array_unshift($list, $sideControls['previous']);
-        $list[] = $sideControls['next'];
-
-        $this->iterator = new Collection($list);
-    }
-
-    private function createPreviousAndNext(array $data) : array
-    {
-        return [
-            'previous' => Factory::create($data + [
-                    'pageNumber' => max(1, $this->current - 1),
-                    'pageName' => '&lt;'
-                ]),
-            'next' => Factory::create($data + [
-                    'pageNumber' => min($this->current + 1, $this->options[self::OPT_TOTAL]),
-                    'pageName' => '&gt;'
-                ])
-        ];
-
-    }
-
-    private function createFirstAndLast(array $data) : array
-    {
-        return [
-            'first' => Factory::create($data + [
-                    'pageNumber' => 1,
-                    'pageName' => 1
-                ]),
-            'last' => Factory::create($data + [
-                    'pageNumber' => $this->options[self::OPT_TOTAL],
-                    'pageName' => $this->options[self::OPT_TOTAL]
-                ])
-        ];
-    }
-
     public function getIterator()
     {
-        return $this->iterator;
+        return $this->slider;
     }
 
     public function isEmpty() : bool
     {
-        return $this->iterator->count() > 0;
+        return $this->slider->count() > 0;
     }
 
     public function previous() : PageInterface
     {
-        return $this->iterator->get(max($this->current - 1, 1));
+        return $this->slider->get(max($this->current - 1, 1));
     }
 
     public function next() : PageInterface
     {
-        return $this->iterator->get(min($this->current + 1, $this->options[self::OPT_TOTAL]));
+        return $this->slider->get(min($this->current + 1, $this->options[self::OPT_TOTAL]));
     }
 
     public function first() : PageInterface
     {
-        return $this->iterator->get(1);
+        return $this->slider->get(1);
     }
 
     public function last() : PageInterface
     {
-        return $this->iterator->get($this->options[self::OPT_TOTAL]);
+        return $this->slider->get($this->options[self::OPT_TOTAL]);
     }
 }
