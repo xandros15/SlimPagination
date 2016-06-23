@@ -46,7 +46,7 @@ class Pagination implements \IteratorAggregate
         $this->router = $router;
         $this->initOptions($options);
         $this->initRequest($request);
-        $this->lastPage = ceil($this->options[self::OPT_TOTAL] / $this->options[self::OPT_PER]);
+        $this->lastPage = (int) ceil($this->options[self::OPT_TOTAL] / $this->options[self::OPT_PER]);
         $this->slider = new Slider([
             'router' => $this->router,
             'query' => $this->query,
