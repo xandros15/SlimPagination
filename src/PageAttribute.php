@@ -20,10 +20,14 @@ class PageAttribute extends Page implements PageInterface
         if ($this->isCurrent()) {
             return '#';
         }
-        $data = $this->request->getAttribute('route')->getArguments();
+
+        $newArguments = [$this->paramName => $this->pageNumber];
+        $arguments = !($arguments = $this->request->getAttribute('route')->getArguments()) ? $newArguments : array_merge($arguments,
+            $newArguments);
+
         return $this->router->pathFor(
             $this->request->getAttribute('route')->getName(),
-            array_merge($data, [$this->paramName => $this->pageNumber]),
+            $arguments,
             $this->request->getQueryParams()
         );
     }
