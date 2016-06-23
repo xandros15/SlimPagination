@@ -45,8 +45,8 @@ class Pagination implements \IteratorAggregate
     {
         $this->router = $router;
         $this->initOptions($options);
-        $this->initRequest($request);
         $this->lastPage = (int) ceil($this->options[self::OPT_TOTAL] / $this->options[self::OPT_PER]);
+        $this->initRequest($request);
         $this->slider = new Slider([
             'router' => $this->router,
             'query' => $this->query,
@@ -104,13 +104,28 @@ class Pagination implements \IteratorAggregate
 
     private function getCurrentPage(Request $request) : int
     {
+        if (!isset($this->lastPage)) {
+            throw new \RuntimeException('You must set `lastPage` property before call ' . __METHOD__);
+        }
+
         switch ($this->options[self::OPT_TYPE]) {
             case Page::ATTRIBUTE:
-                return $request->getAttribute($this->options[self::OPT_NAME], 1);
+                $current = $request->getAttribute($this->options[self::OPT_NAME], 1);
+                break;
             case Page::QUERY_PARAM:
-                return $request->getQueryParam($this->options[self::OPT_NAME], 1);
+                $current = $request->getQueryParam($this->options[self::OPT_NAME], 1);
+                break;
+            default:
+                throw new \InvalidArgumentException('Wrong type of page');
         }
-        throw new \InvalidArgumentException('Wrong type of page');
+
+        if ($current > $this->lastPage) {
+            return $this->lastPage;
+        } elseif ($current < 1) {
+            return 1;
+        } else {
+            return $current;
+        }
     }
 
     public function getIterator()
