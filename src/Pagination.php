@@ -125,12 +125,12 @@ class Pagination implements \IteratorAggregate
 
     public function previous() : PageInterface
     {
-        return $this->slider->get(max($this->current - 1, 1));
+        return $this->slider->get($this->current - 1 < 1 ? 1 : $this->current - 1);
     }
 
     public function next() : PageInterface
     {
-        return $this->slider->get(min($this->current + 1, $this->lastPage));
+        return $this->slider->get($this->current + 1 > $this->lastPage ? $this->lastPage : $this->current + 1);
     }
 
     public function first() : PageInterface
