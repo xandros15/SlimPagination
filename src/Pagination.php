@@ -18,6 +18,7 @@ class Pagination implements \IteratorAggregate
     const OPT_NAME = 'name';
     const OPT_TYPE = 'type';
     const OPT_PER = 'show';
+    const OPT_SIDE_LENGTH = 'side';
     /** @var string */
     private $routeName;
     /** @var array */
@@ -53,7 +54,8 @@ class Pagination implements \IteratorAggregate
             self::OPT_TOTAL => 1,
             self::OPT_PER => 10,
             self::OPT_NAME => 'page',
-            self::OPT_TYPE => Page::QUERY_PARAM
+            self::OPT_TYPE => Page::QUERY_PARAM,
+            self::OPT_SIDE_LENGTH => 3
         ];
 
         $options = array_merge($default, $options);
@@ -68,6 +70,16 @@ class Pagination implements \IteratorAggregate
 
         if (filter_var($options[self::OPT_PER], FILTER_VALIDATE_INT) === false || $options[self::OPT_PER] <= 0) {
             throw new \InvalidArgumentException('option `OPT_PER` must be int and greater than 0');
+        }
+
+        if (filter_var($options[self::OPT_PER], FILTER_VALIDATE_INT) === false || $options[self::OPT_PER] <= 0) {
+            throw new \InvalidArgumentException('option `OPT_PER` must be int and greater than 0');
+        }
+
+        if (filter_var($options[self::OPT_SIDE_LENGTH],
+                FILTER_VALIDATE_INT) === false || $options[self::OPT_SIDE_LENGTH] <= 0
+        ) {
+            throw new \InvalidArgumentException('option `OPT_SIDE_LENGTH` must be int and greater than 0');
         }
 
         $this->options = $options;
