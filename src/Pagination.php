@@ -38,10 +38,15 @@ class Pagination implements \IteratorAggregate
 
     public function __construct(Request $request, Router $router, array $options)
     {
+        $this->init($request, $router, $options);
+    }
+
+    private function init(Request $request, Router $router, array $options)
+    {
         $this->router = $router;
-        $this->init($options);
+        $this->initOptions($options);
         $this->initRequest($request);
-        $this->calculatePages();
+        $this->lastPage = ceil($this->options[self::OPT_TOTAL] / $this->options[self::OPT_PER]);
         $this->slider = new Slider([
             'router' => $this->router,
             'query' => $this->query,
@@ -52,7 +57,7 @@ class Pagination implements \IteratorAggregate
         ], $this->options);
     }
 
-    private function init(array $options)
+    private function initOptions(array $options)
     {
         $default = [
             self::OPT_TOTAL => 1,
@@ -106,11 +111,6 @@ class Pagination implements \IteratorAggregate
                 return $request->getQueryParam($this->options[self::OPT_NAME], 1);
         }
         throw new \InvalidArgumentException('Wrong type of page');
-    }
-
-    private function calculatePages()
-    {
-        $this->lastPage = ceil($this->options[self::OPT_TOTAL] / $this->options[self::OPT_PER]);
     }
 
     public function getIterator()
