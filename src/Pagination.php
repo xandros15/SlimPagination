@@ -12,7 +12,7 @@ use Slim\Collection;
 use Slim\Http\Request;
 use Slim\Router;
 
-class Pagination
+class Pagination implements \IteratorAggregate
 {
 
     const OPT_TOTAL = 'total';
@@ -25,8 +25,6 @@ class Pagination
     private $attributes;
     /** @var array */
     private $query;
-    /** @var Request */
-    private $request;
     /** @var Router */
     private $router;
     /** @var int */
@@ -35,25 +33,18 @@ class Pagination
     private $iterator;
     /** @var array */
     private $options;
-    /** @var int */
-    private $page;
-    /** @var array */
-    private $list;
-    /** @var int */
-    private $max;
-    /** @var int */
-    private $show;
     private $start;
     private $end;
-    private $data;
 
     public function __construct(Request $request, Router $router, array $options)
     {
-        $this->request = $request;
+        $this->iterator = new Collection();
         $this->router = $router;
         $this->init($options);
         $this->initRequest($request);
         $this->initPages();
+        $this->setStartEnd();
+        $this->compile();
     }
 
     private function init(array $options)
@@ -106,6 +97,85 @@ class Pagination
         $this->iterator = new Collection();
     }
 
+    private function setStartEnd()
+    {
+        $offset = (int) ($this->options[self::OPT_SHOW] / 2.1);
+        $start = $this->current - $offset; // current - edge length - 1 'cuz start on 0
+        $end = $this->current + $offset;
+
+        if ($end > $this->options[self::OPT_TOTAL]) { // if wanna edge maximum is very last element
+            $end = $this->options[self::OPT_TOTAL];
+            $start = $this->options[self::OPT_TOTAL] - $this->options[self::OPT_SHOW] + 1;
+        } elseif ($start < 1) { // if wanna edge minimum is very first element
+            $start = 1;
+            $end = $this->options[self::OPT_SHOW];
+        }
+        $this->start = $start;
+        $this->end = $end;
+    }
+
+    private function compile()
+    {
+        $data = [
+            'type' => $this->options[self::OPT_TYPE],
+            'paramName' => $this->options[self::OPT_NAME],
+            'router' => $this->router
+        ];
+        $list = [];
+
+        for ($current = $this->start; $current <= $this->end; $current++) {
+            $list[] = Factory::create($data + [
+                    'pageNumber' => $current,
+                    'pageName' => $current
+                ]);
+        }
+        $sideControls = $this->createPreviousAndNext($data);
+        $edgeControls = $this->createFirstAndLast($data);
+
+
+        if ($edgeControls['first']->pageNumber < $this->start) {
+            array_unshift($list, $edgeControls['first']);
+        }
+        if ($edgeControls['last']->pageNumber > $this->end) {
+            $list[] = $edgeControls['last'];
+        }
+
+        array_unshift($list, $sideControls['previous']);
+        $list[] = $sideControls['next'];
+        foreach ($list as $key => $item) {
+            $this->iterator->set($key, $item);
+        }
+    }
+
+    private function createPreviousAndNext(array $data) : array
+    {
+        return [
+            'previous' => Factory::create($data + [
+                    'pageNumber' => max(1, $this->current - 1),
+                    'pageName' => '&lt;'
+                ]),
+            'next' => Factory::create($data + [
+                    'pageNumber' => min($this->current + 1, $this->options[self::OPT_TOTAL]),
+                    'pageName' => '&gt;'
+                ])
+        ];
+
+    }
+
+    private function createFirstAndLast(array $data) : array
+    {
+        return [
+            'first' => Factory::create($data + [
+                    'pageNumber' => 1,
+                    'pageName' => 1
+                ]),
+            'last' => Factory::create($data + [
+                    'pageNumber' => $this->options[self::OPT_TOTAL],
+                    'pageName' => $this->options[self::OPT_TOTAL]
+                ])
+        ];
+    }
+
     public function getIterator()
     {
         return $this->iterator;
@@ -134,105 +204,5 @@ class Pagination
     public function last() : PageInterface
     {
         return $this->iterator->get($this->options[self::OPT_TOTAL]);
-    }
-
-    /**
-     * Iterator constructor.
-     * @param $data
-     */
-    public function make($data)
-    {
-        $collection = new Collection();
-        $this->show = $data['show'];
-        $this->max = $data['max'];
-        $data['paramName'] = $data['name'];
-        unset($data['name']);
-        unset($data['show']);
-        unset($data['max']);
-        $this->setStartEnd($data);
-        $this->data = $data;
-
-    }
-
-    private function setStartEnd(array $data)
-    {
-        $offset = (int) ($this->show / 2.1);
-        $start = $data['current'] - $offset; // current - edge length - 1 'cuz start on 0
-        $end = $data['current'] + $offset;
-
-        if ($end > $this->max) { // if wanna edge maximum is very last element
-            $end = $this->max;
-            $start = $this->max - $this->show + 1;
-        } elseif ($start < 1) { // if wanna edge minimum is very first element
-            $start = 1;
-            $end = $this->show;
-        }
-        $this->start = $start;
-        $this->end = $end;
-    }
-
-    public function toArray()
-    {
-        return $this->compile();
-    }
-
-    private function compile(): array
-    {
-        $list = [];
-
-        for ($current = $this->start; $current <= $this->end; $current++) {
-            $list[] = Factory::create($this->data + [
-                    'pageNumber' => $current,
-                    'pageName' => $current
-                ]);
-        }
-        /** @var $next PageInterface */
-        /** @var $previous PageInterface */
-        /** @var $first PageInterface */
-        /** @var $last PageInterface */
-        $sideControls = $this->createPreviousAndNext($this->data);
-        $edgeControls = $this->createFirstAndLast($this->data);
-
-
-        if ($edgeControls['first']->pageNumber < $this->start) {
-            array_unshift($list, $edgeControls['first']);
-        }
-        if ($edgeControls['last']->pageNumber > $this->end) {
-            $list[] = $edgeControls['last'];
-        }
-
-        array_unshift($list, $sideControls['previous']);
-        $list[] = $sideControls['next'];
-
-        return $list;
-    }
-
-    private function createPreviousAndNext(array $data) : array
-    {
-        return [
-            'previous' => Factory::create($data + [
-                    'pageNumber' => max(1, $data['current'] - 1),
-                    'pageName' => '&lt;'
-                ]),
-            'next' => Factory::create($data + [
-                    'pageNumber' => min($data['current'] + 1, $this->max),
-                    'pageName' => '&gt;'
-                ])
-        ];
-
-    }
-
-    private function createFirstAndLast(array $data) : array
-    {
-        return [
-            'first' => Factory::create($data + [
-                    'pageNumber' => 1,
-                    'pageName' => 1
-                ]),
-            'last' => Factory::create($data + [
-                    'pageNumber' => $this->max,
-                    'pageName' => $this->max
-                ])
-        ];
     }
 }
