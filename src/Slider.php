@@ -71,7 +71,7 @@ class Slider extends Collection
         array_unshift($list, $sideControls['previous']);
         $list[] = $sideControls['next'];
         foreach ($list as $key => $item) {
-            $this->set($key, $item);
+            $this->set($key + 1, $item);
         }
     }
 
