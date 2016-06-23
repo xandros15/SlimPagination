@@ -15,7 +15,7 @@ use Slim\Router;
 class Pagination
 {
 
-    const OPT_MAX = 'max';
+    const OPT_TOTAL = 'total';
     const OPT_NAME = 'name';
     const OPT_TYPE = 'type';
     const OPT_SHOW = 'show';
@@ -56,7 +56,7 @@ class Pagination
     private function init(array $options)
     {
         $default = [
-            self::OPT_MAX => 1,
+            self::OPT_TOTAL => 1,
             self::OPT_SHOW => 2,
             self::OPT_NAME => 'page',
             self::OPT_TYPE => Page::QUERY_PARAM
@@ -64,16 +64,16 @@ class Pagination
 
         $options = array_merge($default, $options);
 
-        if ($options[self::OPT_MAX] <= 0) {
-            throw new \InvalidArgumentException('option `max` must be int and greater than 0');
+        if ($options[self::OPT_TOTAL] <= 0) {
+            throw new \InvalidArgumentException('option `OPT_TOTAL` must be int and greater than 0');
         }
 
         if (!is_scalar($options[self::OPT_NAME]) && !method_exists($options[self::OPT_NAME], '__toString')) {
-            throw new \InvalidArgumentException('option `name` must be string or instance of object with __toString method');
+            throw new \InvalidArgumentException('option `OPT_NAME` must be string or instance of object with __toString method');
         }
 
         if ($options[self::OPT_SHOW] < 2) {
-            throw new \InvalidArgumentException('option `show` must be int and greater or equal than 2');
+            throw new \InvalidArgumentException('option `OPT_SHOW` must be int and greater or equal than 2');
         }
 
         $this->options = $options;
@@ -115,7 +115,7 @@ class Pagination
 
     public function next() : PageInterface
     {
-        return $this->iterator->get(min($this->current + 1, $this->options[self::OPT_MAX]));
+        return $this->iterator->get(min($this->current + 1, $this->options[self::OPT_TOTAL]));
     }
 
     public function first() : PageInterface
@@ -125,7 +125,7 @@ class Pagination
 
     public function last() : PageInterface
     {
-        return $this->iterator->get($this->options[self::OPT_MAX]);
+        return $this->iterator->get($this->options[self::OPT_TOTAL]);
     }
 
     /**
