@@ -18,17 +18,12 @@ class PageQuery extends Page implements PageInterface
 
     public function pathFor() : string
     {
-        if ($this->isCurrent()) {
-            return '#';
-        }
-
         $newParams = [$this->paramName => $this->pageNumber];
-        $queryParams = !($queryParams = $this->request->getQueryParams()) ? $newParams : $queryParams = array_merge($queryParams,
-            $newParams);
+        $queryParams = !($this->query) ? $newParams : array_merge($this->query, $newParams);
 
         return $this->router->pathFor(
-            $this->request->getAttribute('route')->getName(),
-            $this->request->getAttributes(),
+            $this->routeName,
+            $this->attributes,
             $queryParams
         );
     }

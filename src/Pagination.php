@@ -119,7 +119,11 @@ class Pagination implements \IteratorAggregate
         $data = [
             'type' => $this->options[self::OPT_TYPE],
             'paramName' => $this->options[self::OPT_NAME],
-            'router' => $this->router
+            'router' => $this->router,
+            'query' => $this->query,
+            'attributes' => $this->attributes,
+            'current' => $this->current,
+            'routeName' => $this->routeName
         ];
         $list = [];
 

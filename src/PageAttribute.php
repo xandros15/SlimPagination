@@ -17,18 +17,13 @@ class PageAttribute extends Page implements PageInterface
 
     public function pathFor() : string
     {
-        if ($this->isCurrent()) {
-            return '#';
-        }
-
-        $newArguments = [$this->paramName => $this->pageNumber];
-        $arguments = !($arguments = $this->request->getAttribute('route')->getArguments()) ? $newArguments : array_merge($arguments,
-            $newArguments);
+        $newAttributes = [$this->paramName => $this->pageNumber];
+        $attributes = !($this->attributes) ? $newAttributes : array_merge($this->attributes, $newAttributes);
 
         return $this->router->pathFor(
-            $this->request->getAttribute('route')->getName(),
-            $arguments,
-            $this->request->getQueryParams()
+            $this->routeName,
+            $attributes,
+            $this->query
         );
     }
 

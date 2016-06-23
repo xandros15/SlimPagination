@@ -8,16 +8,17 @@
 
 namespace Xandros15\SlimPagination;
 
-use Slim\Http\Request;
 use Slim\Router;
 
 /**
- * @property Request request
  * @property Router router
  * @property string pageName
  * @property string pageNumber
  * @property string paramName
+ * @property string routeName
  * @property int current
+ * @property array query
+ * @property array attributes
  */
 
 abstract class Page
