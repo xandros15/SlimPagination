@@ -21,9 +21,11 @@ class PageQuery extends Page implements PageInterface
         if ($this->isCurrent()) {
             return '#';
         }
-        $queryParams = array_merge($this->request->getQueryParams(), [
-            $this->paramName => $this->pageNumber
-        ]);
+
+        $newParams = [$this->paramName => $this->pageNumber];
+        $queryParams = !($queryParams = $this->request->getQueryParams()) ? $newParams : $queryParams = array_merge($queryParams,
+            $newParams);
+
         return $this->router->pathFor(
             $this->request->getAttribute('route')->getName(),
             $this->request->getAttributes(),
