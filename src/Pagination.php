@@ -52,6 +52,7 @@ class Pagination
         $this->request = $request;
         $this->router = $router;
         $this->init($options);
+        $this->initRequest($request);
         $this->initPages();
     }
 
@@ -79,19 +80,23 @@ class Pagination
         }
 
         $this->options = $options;
-        $this->current = $this->getCurrentPage();
-        $this->attributes = $this->request->getAttributes();
-        $this->query = $this->request->getQueryParams();
-        $this->routeName = $this->request->getAttribute('route')->getName();
     }
 
-    private function getCurrentPage() : int
+    private function initRequest(Request $request)
+    {
+        $this->current = $this->getCurrentPage($request);
+        $this->attributes = $request->getAttributes();
+        $this->query = $request->getQueryParams();
+        $this->routeName = $request->getAttribute('route')->getName();
+    }
+
+    private function getCurrentPage(Request $request) : int
     {
         switch ($this->options[self::OPT_TYPE]) {
             case Page::ATTRIBUTE:
-                return $this->request->getAttribute($this->options[self::OPT_NAME], 1);
+                return $request->getAttribute($this->options[self::OPT_NAME], 1);
             case Page::QUERY_PARAM:
-                return $this->request->getQueryParam($this->options[self::OPT_NAME], 1);
+                return $request->getQueryParam($this->options[self::OPT_NAME], 1);
         }
         throw new \InvalidArgumentException('Wrong type of page');
     }
