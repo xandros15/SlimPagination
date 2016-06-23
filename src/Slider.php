@@ -57,50 +57,37 @@ class Slider extends Collection
                     'pageName' => $current
                 ]);
         }
-        $sideControls = $this->createPreviousAndNext($params, $options);
-        $edgeControls = $this->createFirstAndLast($params, $options);
+        $this->createPreviousAndNext($params);
+        $this->createFirstAndLast($params);
 
-
-        if ($edgeControls['first']->pageNumber < $this->start) {
-            array_unshift($list, $edgeControls['first']);
-        }
-        if ($edgeControls['last']->pageNumber > $this->end) {
-            $list[] = $edgeControls['last'];
-        }
-
-        array_unshift($list, $sideControls['previous']);
-        $list[] = $sideControls['next'];
         foreach ($list as $key => $item) {
             $this->set($key + 1, $item);
         }
     }
 
-    private function createPreviousAndNext(array $params, array $options) : array
+    private function createPreviousAndNext(array $params)
     {
-        return [
-            'previous' => Factory::create($params + [
-                    'pageNumber' => max(1, $params['current'] - 1),
-                    'pageName' => '&lt;'
-                ]),
-            'next' => Factory::create($params + [
-                    'pageNumber' => min($params['current'] + 1, $options[Pagination::OPT_TOTAL]),
-                    'pageName' => '&gt;'
-                ])
-        ];
-
+        //todo: $this->current - 1 < 1 ? 1 : $this->current - 1 // over min
+        //todo: $this->current + 1 > $this->lastPage ? $this->lastPage : $this->current + 1 // over max
+        $this->set('previous', Factory::create($params + [
+                'pageNumber' => max(1, $params['current'] - 1),
+                'pageName' => '&lt;'
+            ]));
+        $this->set('next', Factory::create($params + [
+                'pageNumber' => min($params['current'] + 1, $params['lastPage']),
+                'pageName' => '&gt;'
+            ]));
     }
 
-    private function createFirstAndLast(array $params, array $options) : array
+    private function createFirstAndLast(array $params)
     {
-        return [
-            'first' => Factory::create($params + [
-                    'pageNumber' => 1,
-                    'pageName' => 1
-                ]),
-            'last' => Factory::create($params + [
-                    'pageNumber' => $options[Pagination::OPT_TOTAL],
-                    'pageName' => $options[Pagination::OPT_TOTAL]
-                ])
-        ];
+        $this->set('first', Factory::create($params + [
+                'pageNumber' => 1,
+                'pageName' => 1
+            ]));
+        $this->set('last', Factory::create($params + [
+                'pageNumber' => $params['lastPage'],
+                'pageName' => $params['lastPage']
+            ]));
     }
 }
