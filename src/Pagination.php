@@ -18,7 +18,7 @@ class Pagination implements \IteratorAggregate
     const OPT_TOTAL = 'total';
     const OPT_NAME = 'name';
     const OPT_TYPE = 'type';
-    const OPT_SHOW = 'show';
+    const OPT_PER = 'show';
     /** @var string */
     private $routeName;
     /** @var array */
@@ -51,14 +51,14 @@ class Pagination implements \IteratorAggregate
     {
         $default = [
             self::OPT_TOTAL => 1,
-            self::OPT_SHOW => 2,
+            self::OPT_PER => 10,
             self::OPT_NAME => 'page',
             self::OPT_TYPE => Page::QUERY_PARAM
         ];
 
         $options = array_merge($default, $options);
 
-        if ($options[self::OPT_TOTAL] <= 0) {
+        if (filter_var($options[self::OPT_TOTAL], FILTER_VALIDATE_INT) === false || $options[self::OPT_TOTAL] <= 0) {
             throw new \InvalidArgumentException('option `OPT_TOTAL` must be int and greater than 0');
         }
 
@@ -66,8 +66,8 @@ class Pagination implements \IteratorAggregate
             throw new \InvalidArgumentException('option `OPT_NAME` must be string or instance of object with __toString method');
         }
 
-        if ($options[self::OPT_SHOW] < 2) {
-            throw new \InvalidArgumentException('option `OPT_SHOW` must be int and greater or equal than 2');
+        if (filter_var($options[self::OPT_PER], FILTER_VALIDATE_INT) === false || $options[self::OPT_PER] <= 0) {
+            throw new \InvalidArgumentException('option `OPT_PER` must be int and greater than 0');
         }
 
         $this->options = $options;
@@ -99,16 +99,16 @@ class Pagination implements \IteratorAggregate
 
     private function setStartEnd()
     {
-        $offset = (int) ($this->options[self::OPT_SHOW] / 2.1);
+        $offset = (int) ($this->options[self::OPT_PER] / 2.1);
         $start = $this->current - $offset; // current - edge length - 1 'cuz start on 0
         $end = $this->current + $offset;
 
         if ($end > $this->options[self::OPT_TOTAL]) { // if wanna edge maximum is very last element
             $end = $this->options[self::OPT_TOTAL];
-            $start = $this->options[self::OPT_TOTAL] - $this->options[self::OPT_SHOW] + 1;
+            $start = $this->options[self::OPT_TOTAL] - $this->options[self::OPT_PER] + 1;
         } elseif ($start < 1) { // if wanna edge minimum is very first element
             $start = 1;
-            $end = $this->options[self::OPT_SHOW];
+            $end = $this->options[self::OPT_PER];
         }
         $this->start = $start;
         $this->end = $end;
