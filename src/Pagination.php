@@ -42,7 +42,6 @@ class Pagination implements \IteratorAggregate
         $this->router = $router;
         $this->init($options);
         $this->initRequest($request);
-        $this->initPages();
         $this->setStartEnd();
         $this->compile();
     }
@@ -90,11 +89,6 @@ class Pagination implements \IteratorAggregate
                 return $request->getQueryParam($this->options[self::OPT_NAME], 1);
         }
         throw new \InvalidArgumentException('Wrong type of page');
-    }
-
-    private function initPages()
-    {
-        $this->iterator = new Collection();
     }
 
     private function setStartEnd()
@@ -146,9 +140,8 @@ class Pagination implements \IteratorAggregate
 
         array_unshift($list, $sideControls['previous']);
         $list[] = $sideControls['next'];
-        foreach ($list as $key => $item) {
-            $this->iterator->set($key, $item);
-        }
+
+        $this->iterator = new Collection($list);
     }
 
     private function createPreviousAndNext(array $data) : array
