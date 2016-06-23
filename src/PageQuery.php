@@ -18,6 +18,9 @@ class PageQuery extends Page implements PageInterface
 
     public function pathFor() : string
     {
+        if ($this->isCurrent()) {
+            return '#';
+        }
         $queryParams = array_merge($this->request->getQueryParams(), [
             $this->paramName => $this->pageNumber
         ]);

@@ -17,6 +17,9 @@ class PageAttribute extends Page implements PageInterface
 
     public function pathFor() : string
     {
+        if ($this->isCurrent()) {
+            return '#';
+        }
         $data = $this->request->getAttribute('route')->getArguments();
         return $this->router->pathFor(
             $this->request->getAttribute('route')->getName(),
