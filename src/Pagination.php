@@ -19,6 +19,10 @@ class Pagination
     const OPT_NAME = 'name';
     const OPT_TYPE = 'type';
     const OPT_SHOW = 'show';
+    /** @var array */
+    private $attributes;
+    /** @var array */
+    private $query;
     /** @var Request */
     private $request;
     /** @var Router */
@@ -74,7 +78,8 @@ class Pagination
 
         $this->options = $options;
         $this->current = $this->getCurrentPage();
-
+        $this->attributes = $this->request->getAttributes();
+        $this->query = $this->request->getQueryParams();
     }
 
     private function getCurrentPage() : int
