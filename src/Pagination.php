@@ -185,9 +185,9 @@ class Pagination implements \IteratorAggregate
         return $this->iterator;
     }
 
-    public function isCreatable() : bool
+    public function isEmpty() : bool
     {
-        return true;
+        return $this->iterator->count() > 0;
     }
 
     public function previous() : PageInterface
