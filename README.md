@@ -121,13 +121,13 @@ Them render if via template manager.
 ## Options
 
 | Name  | Info | Default | More |
-|---|
-| Pagination::OPT_TOTAL | set to total of items | (int) 1 |-|
-| Pagination::OPT_PARAM_NAME | set param name | (string) page |example ?page=2 or /page/2|
-| Pagination::OPT_PARAM_TYPE | set param type (e.g via query or attribute) | (const) Page::QUERY | query for ?page=2 attribute for /page/2 |
-| Pagination::OPT_PER_PAGE | set how many items should be show on one page | (int) 10 |-|
-| Pagination::OPT_SIDE_LENGTH | set how many buttons should be show before slider | (int) 3 |-|
-| Pagination::OPT_LIST_TYPE | set type of list | (const) PageList::NORMAL |-|
+|---|---|---|---|
+| `Pagination::OPT_TOTAL` | set to total of items | (int) 1 |-|
+| `Pagination::OPT_PARAM_NAME` | set param name | (string) page |example ?page=2 or /page/2|
+| `Pagination::OPT_PARAM_TYPE` | set param type (e.g via query or attribute) | (const) Page::QUERY | query for ?page=2 attribute for /page/2 |
+| `Pagination::OPT_PER_PAGE` | set how many items should be show on one page | (int) 10 |-|
+| `Pagination::OPT_SIDE_LENGTH` | set how many buttons should be show before slider | (int) 3 |-|
+| `Pagination::OPT_LIST_TYPE` | set type of list | (const) PageList::NORMAL |-|
 
 ## Methods
 
