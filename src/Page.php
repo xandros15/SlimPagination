@@ -23,18 +23,30 @@ use Slim\Router;
 
 abstract class Page
 {
+    /** for query type of param */
     const QUERY = 1;
+    /** for attribute type of param */
     const ATTRIBUTE = 2;
+    /** slider page */
     const EMPTY = 3;
+    /** number of first page */
     const FIRST_PAGE = 1;
     /** @var array */
     private $params;
 
+    /**
+     * Page constructor.
+     * @param array $params
+     */
     public function __construct(array $params)
     {
         $this->params = $params;
     }
 
+    /**
+     * @param string $name
+     * @return mixed
+     */
     public function __get(string $name)
     {
         if (isset($this->params[$name])) {

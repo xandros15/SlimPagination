@@ -14,11 +14,41 @@ use Slim\Router;
 class Pagination implements \IteratorAggregate
 {
 
+    /**
+     * set to total of items
+     *
+     * default: 1
+     */
     const OPT_TOTAL = 'total';
+    /**
+     * set param name
+     *
+     * default: 'page'
+     */
     const OPT_PARAM_NAME = 'paramName';
+    /**
+     * set param type
+     *
+     * default: Page::QUERY
+     */
     const OPT_PARAM_TYPE = 'paramType';
+    /**
+     * set how many items should be show on one page
+     *
+     * default: 10
+     */
     const OPT_PER_PAGE = 'show';
+    /**
+     * set how many buttons should be show before slider
+     *
+     * default: 3
+     */
     const OPT_SIDE_LENGTH = 'side';
+    /**
+     * set type of list
+     *
+     * default: PageList::NORMAL
+     */
     const OPT_LIST_TYPE = 'listType';
     /** @var string */
     private $routeName;
@@ -37,11 +67,25 @@ class Pagination implements \IteratorAggregate
     /** @var array */
     private $options;
 
+    /**
+     * Pagination constructor.
+     *
+     * @param Request $request
+     * @param Router $router
+     * @param array $options
+     */
     public function __construct(Request $request, Router $router, array $options)
     {
         $this->init($request, $router, $options);
     }
 
+    /**
+     * initialise pagination
+     *
+     * @param Request $request
+     * @param Router $router
+     * @param array $options
+     */
     private function init(Request $request, Router $router, array $options)
     {
         $this->router = $router;
@@ -59,6 +103,12 @@ class Pagination implements \IteratorAggregate
         ], $this->options);
     }
 
+    /**
+     * initialise options
+     *
+     * @throws \InvalidArgumentException
+     * @param array $options
+     */
     private function initOptions(array $options)
     {
         $default = [
@@ -97,6 +147,11 @@ class Pagination implements \IteratorAggregate
         $this->options = $options;
     }
 
+    /**
+     * initialise request properties
+     *
+     * @param Request $request
+     */
     private function initRequest(Request $request)
     {
         $this->current = $this->getCurrentPage($request);
@@ -131,31 +186,77 @@ class Pagination implements \IteratorAggregate
         }
     }
 
+    /**
+     * get a iterator
+     * member of \IteratorAggregate
+     *
+     * @return PageList
+     */
     public function getIterator()
     {
         return $this->pageList;
     }
 
+    /**
+     * check if pagination can be created
+     *
+     * @return bool
+     */
     public function canCreate() : bool
     {
         return $this->lastPage > Page::FIRST_PAGE;
     }
 
+    /**
+     * returns first PageInterface instance
+     *
+     * @return PageInterface
+     */
     public function first() : PageInterface
     {
         return $this->pageList->get('first');
     }
 
+    /**
+     * returns last PageInterface instance
+     *
+     * @return PageInterface
+     */
     public function last() : PageInterface
     {
         return $this->pageList->get('last');
     }
 
+    /**
+     * returning params in json string
+     * params:
+     * - per_page: how many items on one page
+     * - current_page: number of current page
+     * - next_page_url: path for next page
+     * - prev_page_url: path for previous page
+     * - from: number of first item
+     * - to: number of last item
+     *
+     * @param int $options JSON options
+     * @return string
+     */
     public function toJson($options = 0)
     {
         return json_encode($this->toArray(), $options);
     }
 
+    /**
+     * returning params in array
+     * params:
+     * - per_page: how many items on one page
+     * - current_page: number of current page
+     * - next_page_url: path for next page
+     * - prev_page_url: path for previous page
+     * - from: number of first item
+     * - to: number of last item
+     *
+     * @return array
+     */
     public function toArray()
     {
         return [
@@ -168,11 +269,21 @@ class Pagination implements \IteratorAggregate
         ];
     }
 
+    /**
+     * returning next PageInterface instance
+     *
+     * @return PageInterface
+     */
     public function next() : PageInterface
     {
         return $this->pageList->get('next');
     }
 
+    /**
+     * returning previous PageInterface instance
+     *
+     * @return PageInterface
+     */
     public function previous() : PageInterface
     {
         return $this->pageList->get('previous');

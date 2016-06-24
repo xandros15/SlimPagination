@@ -11,6 +11,13 @@ namespace Xandros15\SlimPagination;
 class PageFactory
 {
 
+    /**
+     * Create a page via $param[Pagination::OPT_PARAM_TYPE]
+     *
+     * @throws \InvalidArgumentException
+     * @param array $params
+     * @return PageInterface
+     */
     public static function create(array $params) : PageInterface
     {
         $type = $params[Pagination::OPT_PARAM_TYPE];

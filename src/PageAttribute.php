@@ -10,11 +10,22 @@ namespace Xandros15\SlimPagination;
 
 class PageAttribute extends Page implements PageInterface
 {
+
+    /**
+     * Returning current page number
+     *
+     * @return string
+     */
     public function getPageName() : string
     {
         return $this->pageName;
     }
 
+    /**
+     * Returning parsed address uri
+     *
+     * @return string
+     */
     public function pathFor() : string
     {
         $newAttributes = [$this->paramName => $this->pageNumber];
@@ -27,6 +38,11 @@ class PageAttribute extends Page implements PageInterface
         );
     }
 
+    /**
+     * Check if this page is current
+     *
+     * @return bool
+     */
     public function isCurrent() : bool
     {
         return $this->pageNumber == $this->current;
