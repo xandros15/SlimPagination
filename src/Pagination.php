@@ -138,16 +138,6 @@ class Pagination implements \IteratorAggregate
         return $this->slider->count() > 0;
     }
 
-    public function previous() : PageInterface
-    {
-        return $this->slider->get('previous');
-    }
-
-    public function next() : PageInterface
-    {
-        return $this->slider->get('next');
-    }
-
     public function first() : PageInterface
     {
         return $this->slider->get('first');
@@ -156,5 +146,33 @@ class Pagination implements \IteratorAggregate
     public function last() : PageInterface
     {
         return $this->slider->get('last');
+    }
+
+    public function toJson($options = 0)
+    {
+        return json_encode($this->toArray(), $options);
+    }
+
+    public function toArray()
+    {
+        //todo: better `from` attribute
+        return [
+            'per_page' => $this->options[self::OPT_PER],
+            'current_page' => $this->current,
+            'next_page_url' => $this->next()->pathFor(),
+            'prev_page_url' => $this->previous()->pathFor(),
+            'from' => 1,
+            'to' => $this->lastPage
+        ];
+    }
+
+    public function next() : PageInterface
+    {
+        return $this->slider->get('next');
+    }
+
+    public function previous() : PageInterface
+    {
+        return $this->slider->get('previous');
     }
 }
