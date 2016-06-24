@@ -9,7 +9,7 @@
             "email": "xandros92@gmail.com"
         }
     ],
-    "minimum-stability": "dev",
+    "minimum-stability": "alpha",
     "autoload": {
         "psr-4": {
             "Xandros15\\SlimPagination\\": "src"
@@ -17,11 +17,11 @@
     },
     "require": {
         "php": ">=7.0.0",
-        "slim/slim": "^3.0",
-        "Slim/twig-view": "^2.1",
-        "slim/php-view": "^2.1"
+        "slim/slim": "^3.0"
     },
     "require-dev": {
-        "symfony/var-dumper": "^3.1"
+        "symfony/var-dumper": "^3.1",
+        "Slim/twig-view": "^2.1",
+        "slim/php-view": "^2.1"
     }
 }
