@@ -31,8 +31,8 @@ class Pagination implements \IteratorAggregate
     private $current;
     /** @var int */
     private $lastPage;
-    /** @var Slider */
-    private $slider;
+    /** @var PageList */
+    private $pageList;
     /** @var array */
     private $options;
 
@@ -47,7 +47,7 @@ class Pagination implements \IteratorAggregate
         $this->initOptions($options);
         $this->lastPage = (int) ceil($this->options[self::OPT_TOTAL] / $this->options[self::OPT_PER]);
         $this->initRequest($request);
-        $this->slider = new Slider([
+        $this->pageList = new PageList([
             'router' => $this->router,
             'query' => $this->query,
             'attributes' => $this->attributes,
@@ -130,7 +130,7 @@ class Pagination implements \IteratorAggregate
 
     public function getIterator()
     {
-        return $this->slider;
+        return $this->pageList;
     }
 
     public function canCreate() : bool
@@ -140,12 +140,12 @@ class Pagination implements \IteratorAggregate
 
     public function first() : PageInterface
     {
-        return $this->slider->get('first');
+        return $this->pageList->get('first');
     }
 
     public function last() : PageInterface
     {
-        return $this->slider->get('last');
+        return $this->pageList->get('last');
     }
 
     public function toJson($options = 0)
@@ -168,11 +168,11 @@ class Pagination implements \IteratorAggregate
 
     public function next() : PageInterface
     {
-        return $this->slider->get('next');
+        return $this->pageList->get('next');
     }
 
     public function previous() : PageInterface
     {
-        return $this->slider->get('previous');
+        return $this->pageList->get('previous');
     }
 }
