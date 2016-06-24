@@ -15,9 +15,9 @@ class Pagination implements \IteratorAggregate
 {
 
     const OPT_TOTAL = 'total';
-    const OPT_NAME = 'name';
-    const OPT_TYPE = 'type';
-    const OPT_PER = 'show';
+    const OPT_PARAM_NAME = 'paramName';
+    const OPT_PARAM_TYPE = 'paramType';
+    const OPT_PER_PAGE = 'show';
     const OPT_SIDE_LENGTH = 'side';
     /** @var string */
     private $routeName;
@@ -45,7 +45,7 @@ class Pagination implements \IteratorAggregate
     {
         $this->router = $router;
         $this->initOptions($options);
-        $this->lastPage = (int) ceil($this->options[self::OPT_TOTAL] / $this->options[self::OPT_PER]);
+        $this->lastPage = (int) ceil($this->options[self::OPT_TOTAL] / $this->options[self::OPT_PER_PAGE]);
         $this->initRequest($request);
         $this->pageList = new PageList([
             'router' => $this->router,
@@ -61,9 +61,9 @@ class Pagination implements \IteratorAggregate
     {
         $default = [
             self::OPT_TOTAL => 1,
-            self::OPT_PER => 10,
-            self::OPT_NAME => 'page',
-            self::OPT_TYPE => Page::QUERY_PARAM,
+            self::OPT_PER_PAGE => 10,
+            self::OPT_PARAM_NAME => 'page',
+            self::OPT_PARAM_TYPE => Page::QUERY,
             self::OPT_SIDE_LENGTH => 3
         ];
 
@@ -73,12 +73,16 @@ class Pagination implements \IteratorAggregate
             throw new \InvalidArgumentException('option `OPT_TOTAL` must be int and greater than 0');
         }
 
-        if (!is_scalar($options[self::OPT_NAME]) && !method_exists($options[self::OPT_NAME], '__toString')) {
-            throw new \InvalidArgumentException('option `OPT_NAME` must be string or instance of object with __toString method');
+        if (!is_scalar($options[self::OPT_PARAM_NAME]) && !method_exists($options[self::OPT_PARAM_NAME],
+                '__toString')
+        ) {
+            throw new \InvalidArgumentException('option `OPT_PARAM_NAME` must be string or instance of object with __toString method');
         }
 
-        if (filter_var($options[self::OPT_PER], FILTER_VALIDATE_INT) === false || $options[self::OPT_PER] <= 0) {
-            throw new \InvalidArgumentException('option `OPT_PER` must be int and greater than 0');
+        if (filter_var($options[self::OPT_PER_PAGE],
+                FILTER_VALIDATE_INT) === false || $options[self::OPT_PER_PAGE] <= 0
+        ) {
+            throw new \InvalidArgumentException('option `OPT_PER_PAGE` must be int and greater than 0');
         }
 
         if (filter_var($options[self::OPT_SIDE_LENGTH],
@@ -104,15 +108,15 @@ class Pagination implements \IteratorAggregate
             throw new \RuntimeException('You must set `lastPage` property before call ' . __METHOD__);
         }
 
-        switch ($this->options[self::OPT_TYPE]) {
+        switch ($this->options[self::OPT_PARAM_TYPE]) {
             case Page::ATTRIBUTE:
-                $current = $request->getAttribute($this->options[self::OPT_NAME], 1);
+                $current = $request->getAttribute($this->options[self::OPT_PARAM_NAME], 1);
                 break;
-            case Page::QUERY_PARAM:
-                $current = $request->getQueryParam($this->options[self::OPT_NAME], 1);
+            case Page::QUERY:
+                $current = $request->getQueryParam($this->options[self::OPT_PARAM_NAME], 1);
                 break;
             default:
-                throw new \InvalidArgumentException('Wrong type of page');
+                throw new \InvalidArgumentException('Wrong OPT_PARAM_TYPE');
         }
 
         if ($current > $this->lastPage) {
@@ -152,7 +156,7 @@ class Pagination implements \IteratorAggregate
     public function toArray()
     {
         return [
-            'per_page' => $this->options[self::OPT_PER],
+            'per_page' => $this->options[self::OPT_PER_PAGE],
             'current_page' => $this->current,
             'next_page_url' => $this->next()->pathFor(),
             'prev_page_url' => $this->previous()->pathFor(),

@@ -13,10 +13,10 @@ class PageFactory
 
     public static function create(array $params) : PageInterface
     {
-        $type = $params['type'];
-        unset($params['type']);
+        $type = $params[Pagination::OPT_PARAM_TYPE];
+        unset($params[Pagination::OPT_PARAM_TYPE]);
         switch ($type) {
-            case Page::QUERY_PARAM:
+            case Page::QUERY:
                 return new PageQuery($params);
             case Page::ATTRIBUTE:
                 return new PageAttribute($params);
@@ -24,6 +24,6 @@ class PageFactory
                 return new PageEmpty($params);
         }
 
-        throw new \InvalidArgumentException('Wrong type of page');
+        throw new \InvalidArgumentException('Wrong OPT_PARAM_TYPE');
     }
 }

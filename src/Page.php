@@ -23,7 +23,7 @@ use Slim\Router;
 
 abstract class Page
 {
-    const QUERY_PARAM = 1;
+    const QUERY = 1;
     const ATTRIBUTE = 2;
     const EMPTY = 3;
     const FIRST_PAGE = 1;

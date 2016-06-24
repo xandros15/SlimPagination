@@ -22,8 +22,8 @@ class PageList extends Collection
     private function compile(array $params, array $options)
     {
         $params += [
-            'type' => $options[Pagination::OPT_TYPE],
-            'paramName' => $options[Pagination::OPT_NAME],
+            Pagination::OPT_PARAM_TYPE => $options[Pagination::OPT_PARAM_TYPE],
+            'paramName' => $options[Pagination::OPT_PARAM_NAME],
         ];
 
         $this->compileSidePages($params);
@@ -73,7 +73,7 @@ class PageList extends Collection
     private function compileLeftList(array $params, int $totalSpace)
     {
         $list = $this->getRangeList(['start' => Page::FIRST_PAGE, 'end' => $totalSpace + 2], $params);
-        $list[] = PageFactory::create(['pageName' => '...', Pagination::OPT_TYPE => Page::EMPTY]);
+        $list[] = PageFactory::create(['pageName' => '...', Pagination::OPT_PARAM_TYPE => Page::EMPTY]);
         $list[] = $this->get('last');
         $this->set('list', $list);
     }
@@ -94,7 +94,7 @@ class PageList extends Collection
     {
         $list = [
             $this->get('first'),
-            PageFactory::create(['pageName' => '...', Pagination::OPT_TYPE => Page::EMPTY])
+            PageFactory::create(['pageName' => '...', Pagination::OPT_PARAM_TYPE => Page::EMPTY])
         ];
         $range = $this->getRangeList([
             'start' => $params['lastPage'] - ($totalSpace + 2),
@@ -107,12 +107,12 @@ class PageList extends Collection
     {
         $list = [];
         $list[] = $this->get('first');
-        $list[] = PageFactory::create(['pageName' => '...', Pagination::OPT_TYPE => Page::EMPTY]);
+        $list[] = PageFactory::create(['pageName' => '...', Pagination::OPT_PARAM_TYPE => Page::EMPTY]);
         $list = array_merge($list, $this->getRangeList([
             'start' => $params['current'] - $sideLength,
             'end' => $params['current'] + $sideLength
         ], $params));
-        $list[] = PageFactory::create(['pageName' => '...', Pagination::OPT_TYPE => Page::EMPTY]);
+        $list[] = PageFactory::create(['pageName' => '...', Pagination::OPT_PARAM_TYPE => Page::EMPTY]);
         $list[] = $this->get('last');
         $this->set('list', $list);
     }
