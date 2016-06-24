@@ -8,7 +8,7 @@
 
 namespace Xandros15\SlimPagination;
 
-class Factory
+class PageFactory
 {
 
     public static function create(array $params) : PageInterface

@@ -48,11 +48,11 @@ class PageList extends Collection
     {
         //todo: $this->current - 1 < 1 ? 1 : $this->current - 1 // over min
         //todo: $this->current + 1 > $this->lastPage ? $this->lastPage : $this->current + 1 // over max
-        $this->set('previous', Factory::create($params + [
+        $this->set('previous', PageFactory::create($params + [
                 'pageNumber' => max(1, $params['current'] - 1),
                 'pageName' => '&lt;'
             ]));
-        $this->set('next', Factory::create($params + [
+        $this->set('next', PageFactory::create($params + [
                 'pageNumber' => min($params['current'] + 1, $params['lastPage']),
                 'pageName' => '&gt;'
             ]));
@@ -60,11 +60,11 @@ class PageList extends Collection
 
     private function compileEdgePages(array $params)
     {
-        $this->set('first', Factory::create($params + [
+        $this->set('first', PageFactory::create($params + [
                 'pageNumber' => Page::FIRST_PAGE,
                 'pageName' => Page::FIRST_PAGE
             ]));
-        $this->set('last', Factory::create($params + [
+        $this->set('last', PageFactory::create($params + [
                 'pageNumber' => $params['lastPage'],
                 'pageName' => $params['lastPage']
             ]));
@@ -73,7 +73,7 @@ class PageList extends Collection
     private function compileLeftList(array $params, int $totalSpace)
     {
         $list = $this->getRangeList(['start' => Page::FIRST_PAGE, 'end' => $totalSpace + 2], $params);
-        $list[] = Factory::create(['pageName' => '...', Pagination::OPT_TYPE => Page::EMPTY]);
+        $list[] = PageFactory::create(['pageName' => '...', Pagination::OPT_TYPE => Page::EMPTY]);
         $list[] = $this->get('last');
         $this->set('list', $list);
     }
@@ -82,7 +82,7 @@ class PageList extends Collection
     {
         $list = [];
         for ($page = $range['start']; $page <= $range['end']; $page++) {
-            $list[$page] = Factory::create($params + [
+            $list[$page] = PageFactory::create($params + [
                     'pageNumber' => $page,
                     'pageName' => $page
                 ]);
@@ -94,7 +94,7 @@ class PageList extends Collection
     {
         $list = [
             $this->get('first'),
-            Factory::create(['pageName' => '...', Pagination::OPT_TYPE => Page::EMPTY])
+            PageFactory::create(['pageName' => '...', Pagination::OPT_TYPE => Page::EMPTY])
         ];
         $range = $this->getRangeList([
             'start' => $params['lastPage'] - ($totalSpace + 2),
@@ -107,12 +107,12 @@ class PageList extends Collection
     {
         $list = [];
         $list[] = $this->get('first');
-        $list[] = Factory::create(['pageName' => '...', Pagination::OPT_TYPE => Page::EMPTY]);
+        $list[] = PageFactory::create(['pageName' => '...', Pagination::OPT_TYPE => Page::EMPTY]);
         $list = array_merge($list, $this->getRangeList([
             'start' => $params['current'] - $sideLength,
             'end' => $params['current'] + $sideLength
         ], $params));
-        $list[] = Factory::create(['pageName' => '...', Pagination::OPT_TYPE => Page::EMPTY]);
+        $list[] = PageFactory::create(['pageName' => '...', Pagination::OPT_TYPE => Page::EMPTY]);
         $list[] = $this->get('last');
         $this->set('list', $list);
     }
