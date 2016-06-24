@@ -1,13 +1,13 @@
 # SlimPagination
 simple pagination for slim3
 
-##[Requirements]()
+## Requirements
  PHP 7.0 or higher
  Slim 3.0
-##[Installation]()
+## Installation
 via composer:
 `composer require xandros15/slim-pagination`
-##[Basic Usage]()
+## Basic Usage
 
 Create a object of pagination inside of controller callback, fetch it into string via renderer and pass it as variable:
 
@@ -27,7 +27,7 @@ Create a object of pagination inside of controller callback, fetch it into strin
 
 Them render if via template manager.
 
-###[PHP template example]()
+### PHP template example
 ```php
 <nav class="text-center col-xs-12">
     <ul class="pagination">
@@ -74,7 +74,7 @@ Them render if via template manager.
 </nav>
 ```
 
-###[Twig template example]()
+### Twig template example
 ```twig
 {% if pagination.canCreate %}
     <nav class="text-center col-xs-12">
@@ -115,7 +115,7 @@ Them render if via template manager.
 {% endif %}
 ```
 
-##[Options]()
+## Options
 
 | Name  | Info | Default | More |
 |---|
@@ -126,9 +126,9 @@ Them render if via template manager.
 | Pagination::OPT_SIDE_LENGTH | set how many buttons should be show before slider | (int) 3 |-|
 | Pagination::OPT_LIST_TYPE | set type of list | (const) PageList::NORMAL |-|
 
-##[Methods]()
+## Methods
 
-###[PageInterface]()
+### PageInterface
 
 `pathFor()` - returning path for this page
 
@@ -138,7 +138,7 @@ Them render if via template manager.
 
 `isSlider()` - check if this page is slider
 
-### [Pagination]()
+### Pagination
 
 `previous()` - getting previous page, if doesn't exist returning current
 
