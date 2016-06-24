@@ -63,11 +63,11 @@ class PageList extends Collection
         //todo: $this->current + 1 > $this->lastPage ? $this->lastPage : $this->current + 1 // over max
         $this->set('previous', PageFactory::create($params + [
                 'pageNumber' => max(1, $params['current'] - 1),
-                'pageName' => '&lt;'
+                'pageName' => '&laquo;'
             ]));
         $this->set('next', PageFactory::create($params + [
                 'pageNumber' => min($params['current'] + 1, $params['lastPage']),
-                'pageName' => '&gt;'
+                'pageName' => '&raquo;'
             ]));
     }
 
