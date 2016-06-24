@@ -19,6 +19,7 @@ class Pagination implements \IteratorAggregate
     const OPT_PARAM_TYPE = 'paramType';
     const OPT_PER_PAGE = 'show';
     const OPT_SIDE_LENGTH = 'side';
+    const OPT_LIST_TYPE = 'listType';
     /** @var string */
     private $routeName;
     /** @var array */
@@ -64,7 +65,8 @@ class Pagination implements \IteratorAggregate
             self::OPT_PER_PAGE => 10,
             self::OPT_PARAM_NAME => 'page',
             self::OPT_PARAM_TYPE => Page::QUERY,
-            self::OPT_SIDE_LENGTH => 3
+            self::OPT_SIDE_LENGTH => 3,
+            self::OPT_LIST_TYPE => PageList::NORMAL
         ];
 
         $options = array_merge($default, $options);

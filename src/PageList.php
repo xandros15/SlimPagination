@@ -13,6 +13,10 @@ use Slim\Collection;
 class PageList extends Collection
 {
 
+    const MINI = 1;
+    const NORMAL = 2;
+    const NONE = 3;
+
     public function __construct(array $params, array $options)
     {
         parent::__construct();
@@ -25,23 +29,32 @@ class PageList extends Collection
             Pagination::OPT_PARAM_TYPE => $options[Pagination::OPT_PARAM_TYPE],
             'paramName' => $options[Pagination::OPT_PARAM_NAME],
         ];
+        $this->preCompile($params);
 
-        $this->compileSidePages($params);
-        $this->compileEdgePages($params);
         if ($params['lastPage'] < 2) {
             $this->set('list', []);
             return;
         }
 
-        $totalSpace = 2 * $options[Pagination::OPT_SIDE_LENGTH];
-
-        if ($params['current'] <= $totalSpace) {
-            $this->compileLeftList($params, $totalSpace);
-        } elseif ($params['current'] > ($params['lastPage'] - $totalSpace)) {
-            $this->compileRightList($params, $totalSpace);
-        } else {
-            $this->compileAdjacentList($params, $options[Pagination::OPT_SIDE_LENGTH]);
+        switch ($options[Pagination::OPT_LIST_TYPE]) {
+            case self::MINI:
+                $this->compileMiniList();
+                break;
+            case self::NORMAL:
+                $this->compileNormalList($params, 2 * $options[Pagination::OPT_SIDE_LENGTH]);
+                break;
+            case self::NONE:
+                $this->set('list', []);
+                break;
+            default:
+                throw new \InvalidArgumentException('Wrong OPT_LIST_TYPE');
         }
+    }
+
+    private function preCompile($params)
+    {
+        $this->compileSidePages($params);
+        $this->compileEdgePages($params);
     }
 
     private function compileSidePages(array $params)
@@ -68,6 +81,25 @@ class PageList extends Collection
                 'pageNumber' => $params['lastPage'],
                 'pageName' => $params['lastPage']
             ]));
+    }
+
+    private function compileMiniList()
+    {
+        $this->set('list', [
+            $this->get('previous'),
+            $this->get('next')
+        ]);
+    }
+
+    private function compileNormalList($params, $totalSpace)
+    {
+        if ($params['current'] <= $totalSpace) {
+            $this->compileLeftList($params, $totalSpace);
+        } elseif ($params['current'] > ($params['lastPage'] - $totalSpace)) {
+            $this->compileRightList($params, $totalSpace);
+        } else {
+            $this->compileAdjacentList($params, (int) $totalSpace / 2);
+        }
     }
 
     private function compileLeftList(array $params, int $totalSpace)
@@ -125,13 +157,5 @@ class PageList extends Collection
     public function count()
     {
         return count($this->get('list'));
-    }
-
-    private function compileMiniList()
-    {
-        $this->set('list', [
-            $this->get('previous'),
-            $this->get('next')
-        ]);
     }
 }
