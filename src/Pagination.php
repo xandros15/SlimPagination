@@ -133,9 +133,9 @@ class Pagination implements \IteratorAggregate
         return $this->slider;
     }
 
-    public function isEmpty() : bool
+    public function canCreate() : bool
     {
-        return $this->slider->count() > 0;
+        return $this->lastPage > 1;
     }
 
     public function first() : PageInterface
