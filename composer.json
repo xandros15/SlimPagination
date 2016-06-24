@@ -17,7 +17,8 @@
     },
     "require": {
         "php": ">=7.0.0",
-        "slim/slim": "^3.0"
+        "slim/slim": "^3.0",
+        "Slim/twig-view": "^2.1"
     },
     "require-dev": {
         "symfony/var-dumper": "^3.1"
