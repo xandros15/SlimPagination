@@ -81,10 +81,6 @@ class Pagination implements \IteratorAggregate
             throw new \InvalidArgumentException('option `OPT_PER` must be int and greater than 0');
         }
 
-        if (filter_var($options[self::OPT_PER], FILTER_VALIDATE_INT) === false || $options[self::OPT_PER] <= 0) {
-            throw new \InvalidArgumentException('option `OPT_PER` must be int and greater than 0');
-        }
-
         if (filter_var($options[self::OPT_SIDE_LENGTH],
                 FILTER_VALIDATE_INT) === false || $options[self::OPT_SIDE_LENGTH] <= 0
         ) {
