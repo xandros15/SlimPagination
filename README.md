@@ -2,8 +2,11 @@
 simple pagination for slim3
 
 ## Requirements
+
  PHP 7.0 or higher
+ 
  Slim 3.0
+ 
 ## Installation
 via composer:
 `composer require xandros15/slim-pagination`
