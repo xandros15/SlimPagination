@@ -117,8 +117,8 @@ class Pagination implements \IteratorAggregate
 
         if ($current > $this->lastPage) {
             return $this->lastPage;
-        } elseif ($current < 1) {
-            return 1;
+        } elseif ($current < Page::FIRST_PAGE) {
+            return Page::FIRST_PAGE;
         } else {
             return $current;
         }
@@ -131,7 +131,7 @@ class Pagination implements \IteratorAggregate
 
     public function canCreate() : bool
     {
-        return $this->lastPage > 1;
+        return $this->lastPage > Page::FIRST_PAGE;
     }
 
     public function first() : PageInterface
@@ -151,13 +151,12 @@ class Pagination implements \IteratorAggregate
 
     public function toArray()
     {
-        //todo: better `from` attribute
         return [
             'per_page' => $this->options[self::OPT_PER],
             'current_page' => $this->current,
             'next_page_url' => $this->next()->pathFor(),
             'prev_page_url' => $this->previous()->pathFor(),
-            'from' => 1,
+            'from' => Page::FIRST_PAGE,
             'to' => $this->lastPage
         ];
     }

@@ -61,8 +61,8 @@ class PageList extends Collection
     private function compileEdgePages(array $params)
     {
         $this->set('first', Factory::create($params + [
-                'pageNumber' => 1,
-                'pageName' => 1
+                'pageNumber' => Page::FIRST_PAGE,
+                'pageName' => Page::FIRST_PAGE
             ]));
         $this->set('last', Factory::create($params + [
                 'pageNumber' => $params['lastPage'],
@@ -72,7 +72,7 @@ class PageList extends Collection
 
     private function compileLeftList(array $params, int $totalSpace)
     {
-        $list = $this->getRangeList(['start' => 1, 'end' => $totalSpace + 2], $params);
+        $list = $this->getRangeList(['start' => Page::FIRST_PAGE, 'end' => $totalSpace + 2], $params);
         $list[] = Factory::create(['pageName' => '...', Pagination::OPT_TYPE => Page::EMPTY]);
         $list[] = $this->get('last');
         $this->set('list', $list);
