@@ -31,11 +31,6 @@ class PageList extends Collection
         ];
         $this->preCompile($params);
 
-        if ($params['lastPage'] < 2) {
-            $this->set('list', []);
-            return;
-        }
-
         switch ($options[Pagination::OPT_LIST_TYPE]) {
             case self::MINI:
                 $this->compileMiniList();

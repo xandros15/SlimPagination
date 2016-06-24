@@ -47,6 +47,7 @@ class Pagination implements \IteratorAggregate
         $this->router = $router;
         $this->initOptions($options);
         $this->lastPage = (int) ceil($this->options[self::OPT_TOTAL] / $this->options[self::OPT_PER_PAGE]);
+        $this->options[self::OPT_LIST_TYPE] = !($this->lastPage > Page::FIRST_PAGE) ? PageList::NONE : $this->options[self::OPT_LIST_TYPE];
         $this->initRequest($request);
         $this->pageList = new PageList([
             'router' => $this->router,
