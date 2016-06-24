@@ -41,4 +41,14 @@ class PageEmpty extends Page implements PageInterface
     {
         return $this->pageName;
     }
+
+    /**
+     * check if is Slider
+     *
+     * @return bool
+     */
+    public function isSlider() : bool
+    {
+        return true;
+    }
 }

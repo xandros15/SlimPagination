@@ -31,4 +31,11 @@ interface PageInterface
      * @return string
      */
     public function getPageName() : string;
+
+    /**
+     * check if is Slider
+     *
+     * @return bool
+     */
+    public function isSlider() : bool;
 }

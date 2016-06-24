@@ -31,4 +31,14 @@ class PageAttribute extends Page implements PageInterface
     {
         return $this->pageNumber == $this->current;
     }
+
+    /**
+     * check if is Slider
+     *
+     * @return bool
+     */
+    public function isSlider() : bool
+    {
+        return false;
+    }
 }
