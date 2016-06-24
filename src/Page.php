@@ -10,17 +10,6 @@ namespace Xandros15\SlimPagination;
 
 use Slim\Router;
 
-/**
- * @property Router router
- * @property string pageName
- * @property string pageNumber
- * @property string paramName
- * @property string routeName
- * @property int current
- * @property array query
- * @property array attributes
- */
-
 abstract class Page
 {
     /** for query type of param */
@@ -31,8 +20,22 @@ abstract class Page
     const EMPTY = 3;
     /** number of first page */
     const FIRST_PAGE = 1;
+    /** @var Router */
+    protected $router;
+    /** @var string */
+    protected $pageName;
+    /** @var string */
+    protected $pageNumber;
+    /** @var string */
+    protected $paramName;
+    /** @var string */
+    protected $routeName;
+    /** @var int */
+    protected $current;
     /** @var array */
-    private $params;
+    protected $query;
+    /** @var array */
+    protected $attributes;
 
     /**
      * Page constructor.
@@ -40,19 +43,8 @@ abstract class Page
      */
     public function __construct(array $params)
     {
-        $this->params = $params;
-    }
-
-    /**
-     * @param string $name
-     * @return mixed
-     */
-    public function __get(string $name)
-    {
-        if (isset($this->params[$name])) {
-            return $this->params[$name];
+        foreach ($params as $name => $param) {
+            $this->{$name} = $param;
         }
-        throw new \InvalidArgumentException('Property `' . __CLASS__ . '::' . $name . '` doesn\'t exist');
     }
-
 }
