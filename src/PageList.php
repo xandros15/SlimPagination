@@ -9,6 +9,7 @@
 namespace Xandros15\SlimPagination;
 
 use Slim\Collection;
+use Slim\Router;
 
 class PageList extends Collection
 {
@@ -19,6 +20,12 @@ class PageList extends Collection
     const NORMAL = 2;
     /** for type list */
     const NONE = 3;
+    /** for query type of param */
+    const PAGE_QUERY = 1;
+    /** for attribute type of param */
+    const PAGE_ATTRIBUTE = 2;
+    /** number of first page */
+    const FIRST_PAGE = 1;
 
     /**
      * PageList constructor.
@@ -80,14 +87,46 @@ class PageList extends Collection
     {
         //todo: $this->current - 1 < 1 ? 1 : $this->current - 1 // over min
         //todo: $this->current + 1 > $this->lastPage ? $this->lastPage : $this->current + 1 // over max
-        $this->set('previous', PageFactory::create($params + [
+        $this->set('previous', $this->createPage($params + [
                 'pageNumber' => max(1, $params['current'] - 1),
                 'pageName' => '&laquo;'
             ]));
-        $this->set('next', PageFactory::create($params + [
+        $this->set('next', $this->createPage($params + [
                 'pageNumber' => min($params['current'] + 1, $params['lastPage']),
                 'pageName' => '&raquo;'
             ]));
+    }
+
+    private function createPage(array $params) : array
+    {
+        $attributes = $this->createAttributes($params);
+        $query = $this->createQuery($params);
+        /** @var $router Router */
+        $router = $params['router'];
+        return [
+            'pathFor' => $router->pathFor($params['routeName'], $attributes, $query),
+            'isCurrent' => $params['current'] == $params['pageNumber'],
+            'getPageName' => $params['pageName'],
+            'isSlider' => false
+        ];
+    }
+
+    private function createAttributes($params)
+    {
+        if ($params[Pagination::OPT_PARAM_TYPE] == self::PAGE_ATTRIBUTE) {
+            $newAttributes = [$params['paramName'] => $params['pageNumber']];
+            return !($params['attributes']) ? $newAttributes : array_merge($params['attributes'], $newAttributes);
+        }
+        return $params['attributes'];
+    }
+
+    private function createQuery($params)
+    {
+        if ($params[Pagination::OPT_PARAM_TYPE] == self::PAGE_QUERY) {
+            $newQuery = [$params['paramName'] => $params['pageNumber']];
+            return !($params['query']) ? $newQuery : array_merge($params['query'], $newQuery);
+        }
+        return $params['query'];
     }
 
     /**
@@ -97,11 +136,11 @@ class PageList extends Collection
      */
     private function compileEdgePages(array $params)
     {
-        $this->set('first', PageFactory::create($params + [
-                'pageNumber' => Page::FIRST_PAGE,
-                'pageName' => Page::FIRST_PAGE
+        $this->set('first', $this->createPage($params + [
+                'pageNumber' => self::FIRST_PAGE,
+                'pageName' => self::FIRST_PAGE
             ]));
-        $this->set('last', PageFactory::create($params + [
+        $this->set('last', $this->createPage($params + [
                 'pageNumber' => $params['lastPage'],
                 'pageName' => $params['lastPage']
             ]));
@@ -145,8 +184,8 @@ class PageList extends Collection
      */
     private function compileLeftList(array $params, int $totalSpace)
     {
-        $list = $this->getRangePages(['start' => Page::FIRST_PAGE, 'end' => $totalSpace + 2], $params);
-        $list[] = PageFactory::create(['pageName' => '...', Pagination::OPT_PARAM_TYPE => Page::EMPTY]);
+        $list = $this->getRangePages(['start' => self::FIRST_PAGE, 'end' => $totalSpace + 2], $params);
+        $list[] = $this->createSliderPage();
         $list[] = $this->get('last');
         $this->set('list', $list);
     }
@@ -162,12 +201,22 @@ class PageList extends Collection
     {
         $list = [];
         for ($page = $range['start']; $page <= $range['end']; $page++) {
-            $list[$page] = PageFactory::create($params + [
+            $list[$page] = $this->createPage($params + [
                     'pageNumber' => $page,
                     'pageName' => $page
                 ]);
         }
         return $list;
+    }
+
+    private function createSliderPage() : array
+    {
+        return [
+            'pathFor' => '#',
+            'isCurrent' => false,
+            'getPageName' => '...',
+            'isSlider' => true
+        ];
     }
 
     /**
@@ -180,7 +229,7 @@ class PageList extends Collection
     {
         $list = [
             $this->get('first'),
-            PageFactory::create(['pageName' => '...', Pagination::OPT_PARAM_TYPE => Page::EMPTY])
+            $this->createSliderPage()
         ];
         $range = $this->getRangePages([
             'start' => $params['lastPage'] - ($totalSpace + 2),
@@ -199,12 +248,12 @@ class PageList extends Collection
     {
         $list = [];
         $list[] = $this->get('first');
-        $list[] = PageFactory::create(['pageName' => '...', Pagination::OPT_PARAM_TYPE => Page::EMPTY]);
+        $list[] = $this->createSliderPage();
         $list = array_merge($list, $this->getRangePages([
             'start' => $params['current'] - $sideLength,
             'end' => $params['current'] + $sideLength
         ], $params));
-        $list[] = PageFactory::create(['pageName' => '...', Pagination::OPT_PARAM_TYPE => Page::EMPTY]);
+        $list[] = $this->createSliderPage();
         $list[] = $this->get('last');
         $this->set('list', $list);
     }
