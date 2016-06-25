@@ -35,41 +35,40 @@ Them render if via template manager.
 <nav class="text-center col-xs-12">
     <ul class="pagination">
         <?php /** @var $pagination Xandros15\SlimPagination\Pagination */ ?>
-        <?php if ($pagination->previous()->isCurrent()): ?>
+        <?php if ($pagination->previous()['isCurrent']): ?>
             <li class="disabled">
-                <span><?= $pagination->previous()->getPageName() ?></span>
+                <span><?= $pagination->previous()['pageName']?></span>
             </li>
         <?php else: ?>
             <li>
-                <a aria-label="previous" href="<?= $pagination->previous()->pathFor() ?>">
-                    <span aria-hidden="true"><?= $pagination->previous()->getPageName() ?></span>
+                <a aria-label="previous" href="<?= $pagination->previous()['pathFor']?>">
+                    <span aria-hidden="true"><?= $pagination->previous()['pageName']?></span>
                 </a>
             </li>
         <?php endif ?>
         <?php foreach ($pagination as $page): ?>
-            <?php /** @var $page Xandros15\SlimPagination\PageInterface */ ?>
-            <?php if ($page->isSlider()): ?>
+            <?php if ($page['isSlider']): ?>
                 <li class="disabled">
-                    <span><?= $page->getPageName() ?></span>
+                    <span><?= $page['pageName']?></span>
                 </li>
-            <?php elseif ($page->isCurrent()): ?>
+            <?php elseif ($page['isCurrent']): ?>
                 <li class="active">
-                    <span><?= $page->getPageName() ?></span>
+                    <span><?= $page['pageName']?></span>
                 </li>
             <?php else: ?>
                 <li>
-                    <a href="<?= $page->pathFor() ?>"><?= $page->getPageName() ?></a>
+                    <a href="<?= $page['pathFor']?>"><?= $page['pageName']?></a>
                 </li>
             <?php endif; ?>
         <?php endforeach; ?>
-        <?php if ($pagination->next()->isCurrent()): ?>
+        <?php if ($pagination->next()['isCurrent']): ?>
             <li class="disabled">
-                <span><?= $pagination->next()->getPageName() ?></span>
+                <span><?= $pagination->next()['pageName']?></span>
             </li>
         <?php else: ?>
             <li>
-                <a aria-label="next" href="<?= $pagination->next()->pathFor() ?>">
-                    <span aria-hidden="true"><?= $pagination->next()->getPageName() ?></span>
+                <a aria-label="next" href="<?= $pagination->next()['pathFor']?>">
+                    <span aria-hidden="true"><?= $pagination->next()['pageName']?></span>
                 </a>
             </li>
         <?php endif ?>
@@ -84,32 +83,32 @@ Them render if via template manager.
         <ul class="pagination">
             {% if pagination.previous.isCurrent %}
                 <li class="disabled">
-                    <span>{{ pagination.previous.getPageName() | raw }}</span>
+                    <span>{{ pagination.previous.pageName | raw }}</span>
                 </li>
             {% else %}
                 <li>
                     <a aria-label="previous" href="{{ pagination.previous.pathFor }}">
-                        <span aria-hidden="true">{{ pagination.previous.getPageName() | raw }}</span>
+                        <span aria-hidden="true">{{ pagination.previous.pageName | raw }}</span>
                     </a>
                 </li>
             {% endif %}
             {% for page in pagination %}
-                {% if page.isSlider() %}
-                    <li class="disabled"><span>{{ page.getPageName() }}</span></li>
-                {% elseif page.isCurrent() %}
-                    <li class="active"><span>{{ page.getPageName() }}</span></li>
+                {% if page.isSlider %}
+                    <li class="disabled"><span>{{ page.pageName }}</span></li>
+                {% elseif page.isCurrent %}
+                    <li class="active"><span>{{ page.pageName }}</span></li>
                 {% else %}
-                    <li><a href="{{ page.pathFor() }}">{{ page.getPageName() }}</a></li>
+                    <li><a href="{{ page.pathFor}}">{{ page.pageName }}</a></li>
                 {% endif %}
             {% endfor %}
             {% if pagination.next.isCurrent %}
                 <li class="disabled">
-                    <span aria-hidden="true">{{ pagination.next.getPageName() | raw }}</span>
+                    <span aria-hidden="true">{{ pagination.next.pageName | raw }}</span>
                 </li>
             {% else %}
                 <li>
                     <a aria-label="next" href="{{ pagination.next.pathFor }}">
-                        <span aria-hidden="true">{{ pagination.next.getPageName() | raw }}</span>
+                        <span aria-hidden="true">{{ pagination.next.pageName | raw }}</span>
                     </a>
                 </li>
             {% endif %}
@@ -129,17 +128,17 @@ Them render if via template manager.
 | `Pagination::OPT_SIDE_LENGTH` | set how many buttons should be show before slider | (int) 3 |-|
 | `Pagination::OPT_LIST_TYPE` | set type of list | (const) PageList::NORMAL |-|
 
-## Methods
+## Methods and Attributes
 
-### PageInterface
+### Page 
 
-`pathFor()` - returning path for this page
+`pathFor` - returning path for this page
 
-`isCurrent()` - check if this page is current
+`isCurrent` - check if this page is current
 
-`getPageName()` - returning page name (e.g. number)
+`pageName` - returning page name (e.g. number)
 
-`isSlider()` - check if this page is slider
+`isSlider` - check if this page is slider
 
 ### Pagination
 
