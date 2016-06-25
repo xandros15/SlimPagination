@@ -97,6 +97,16 @@ class PageList extends Collection
             ]));
     }
 
+    /**
+     * create page array with params:
+     * - pathFor: path for page
+     * - isCurrent: check if is current page
+     * - pageName: page name
+     * - isSlider: check if is slider page
+     *
+     * @param array $params
+     * @return array
+     */
     private function createPage(array $params) : array
     {
         $attributes = $this->createAttributes($params);
@@ -106,11 +116,17 @@ class PageList extends Collection
         return [
             'pathFor' => $router->pathFor($params['routeName'], $attributes, $query),
             'isCurrent' => $params['current'] == $params['pageNumber'],
-            'getPageName' => $params['pageName'],
+            'pageName' => $params['pageName'],
             'isSlider' => false
         ];
     }
 
+    /**
+     * create new attributes based on old one
+     *
+     * @param $params
+     * @return array
+     */
     private function createAttributes($params)
     {
         if ($params[Pagination::OPT_PARAM_TYPE] == self::PAGE_ATTRIBUTE) {
@@ -120,6 +136,12 @@ class PageList extends Collection
         return $params['attributes'];
     }
 
+    /**
+     * create new query based on old one
+     *
+     * @param $params
+     * @return array
+     */
     private function createQuery($params)
     {
         if ($params[Pagination::OPT_PARAM_TYPE] == self::PAGE_QUERY) {
@@ -209,12 +231,21 @@ class PageList extends Collection
         return $list;
     }
 
+    /**
+     * creating slider page with params:
+     * - pathFor: path for page | #
+     * - isCurrent: check if is current page | false
+     * - pageName: page name | ...
+     * - isSlider: check if is slider page | true
+     *
+     * @return array
+     */
     private function createSliderPage() : array
     {
         return [
             'pathFor' => '#',
             'isCurrent' => false,
-            'getPageName' => '...',
+            'pageName' => '...',
             'isSlider' => true
         ];
     }
