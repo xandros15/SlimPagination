@@ -137,7 +137,35 @@ Them render if via template manager.
  `PageList::MINI` is minimalistic pagination:
  
 ![mini](https://cloud.githubusercontent.com/assets/10834079/16358438/f3a806fa-3b12-11e6-9604-2caa16e80c86.png)
- 
+
+can be created by simple code: 
+
+#### twig
+
+```twig 
+{% for page in pagination %}
+    {% if page.isCurrent %}
+        <li class="disabled"><span>{{ page.pageName }}</span></li>
+    {% else %}
+        <li><a href="{{ page.pathFor }}">{{ page.pageName }}</a></li>
+    {% endif %}
+{% endfor %}
+```
+#### php
+```php
+<?php foreach ($pagination as $page): ?>
+    <?php if ($page['isCurrent']): ?>
+        <li class="disabled">
+            <span><?= $page['pageName'] ?></span>
+        </li>
+    <?php else: ?>
+        <li>
+            <a href="<?= $page['pathFor'] ?>"><?= $page['pageName'] ?></a>
+        </li>
+    <?php endif; ?>
+<?php endforeach; ?>
+```
+
  `PageList::NONE` turns off pagination
  
 ## Methods and Attributes
