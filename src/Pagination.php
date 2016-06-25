@@ -91,7 +91,7 @@ class Pagination implements \IteratorAggregate
         $this->router = $router;
         $this->initOptions($options);
         $this->lastPage = (int) ceil($this->options[self::OPT_TOTAL] / $this->options[self::OPT_PER_PAGE]);
-        $this->options[self::OPT_LIST_TYPE] = !($this->lastPage > Page::FIRST_PAGE) ? PageList::NONE : $this->options[self::OPT_LIST_TYPE];
+        $this->options[self::OPT_LIST_TYPE] = !($this->lastPage > PageList::FIRST_PAGE) ? PageList::NONE : $this->options[self::OPT_LIST_TYPE];
         $this->initRequest($request);
         $this->pageList = new PageList([
             'router' => $this->router,
@@ -115,7 +115,7 @@ class Pagination implements \IteratorAggregate
             self::OPT_TOTAL => 1,
             self::OPT_PER_PAGE => 10,
             self::OPT_PARAM_NAME => 'page',
-            self::OPT_PARAM_TYPE => Page::QUERY,
+            self::OPT_PARAM_TYPE => PageList::PAGE_QUERY,
             self::OPT_SIDE_LENGTH => 3,
             self::OPT_LIST_TYPE => PageList::NORMAL
         ];
@@ -167,10 +167,10 @@ class Pagination implements \IteratorAggregate
         }
 
         switch ($this->options[self::OPT_PARAM_TYPE]) {
-            case Page::ATTRIBUTE:
+            case PageList::PAGE_ATTRIBUTE:
                 $current = $request->getAttribute($this->options[self::OPT_PARAM_NAME], 1);
                 break;
-            case Page::QUERY:
+            case PageList::PAGE_QUERY:
                 $current = $request->getQueryParam($this->options[self::OPT_PARAM_NAME], 1);
                 break;
             default:
@@ -179,8 +179,8 @@ class Pagination implements \IteratorAggregate
 
         if ($current > $this->lastPage) {
             return $this->lastPage;
-        } elseif ($current < Page::FIRST_PAGE) {
-            return Page::FIRST_PAGE;
+        } elseif ($current < PageList::FIRST_PAGE) {
+            return PageList::FIRST_PAGE;
         } else {
             return $current;
         }
@@ -204,15 +204,15 @@ class Pagination implements \IteratorAggregate
      */
     public function canCreate() : bool
     {
-        return $this->lastPage > Page::FIRST_PAGE;
+        return $this->lastPage > PageList::FIRST_PAGE;
     }
 
     /**
      * returns first PageInterface instance
      *
-     * @return PageInterface
+     * @return array
      */
-    public function first() : PageInterface
+    public function first() : array 
     {
         return $this->pageList->get('first');
     }
@@ -220,9 +220,9 @@ class Pagination implements \IteratorAggregate
     /**
      * returns last PageInterface instance
      *
-     * @return PageInterface
+     * @return array
      */
-    public function last() : PageInterface
+    public function last() : array 
     {
         return $this->pageList->get('last');
     }
@@ -262,9 +262,9 @@ class Pagination implements \IteratorAggregate
         return [
             'per_page' => $this->options[self::OPT_PER_PAGE],
             'current_page' => $this->current,
-            'next_page_url' => $this->next()->pathFor(),
-            'prev_page_url' => $this->previous()->pathFor(),
-            'from' => Page::FIRST_PAGE,
+            'next_page_url' => $this->next()['pathFor'],
+            'prev_page_url' => $this->previous()['pathFor'],
+            'from' => PageList::FIRST_PAGE,
             'to' => $this->lastPage
         ];
     }
@@ -272,9 +272,9 @@ class Pagination implements \IteratorAggregate
     /**
      * returning next PageInterface instance
      *
-     * @return PageInterface
+     * @return array
      */
-    public function next() : PageInterface
+    public function next() : array
     {
         return $this->pageList->get('next');
     }
@@ -282,9 +282,9 @@ class Pagination implements \IteratorAggregate
     /**
      * returning previous PageInterface instance
      *
-     * @return PageInterface
+     * @return array
      */
-    public function previous() : PageInterface
+    public function previous() : array
     {
         return $this->pageList->get('previous');
     }

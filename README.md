@@ -35,41 +35,40 @@ Them render if via template manager.
 <nav class="text-center col-xs-12">
     <ul class="pagination">
         <?php /** @var $pagination Xandros15\SlimPagination\Pagination */ ?>
-        <?php if ($pagination->previous()->isCurrent()): ?>
+        <?php if ($pagination->previous()['isCurrent']): ?>
             <li class="disabled">
-                <span><?= $pagination->previous()->getPageName() ?></span>
+                <span><?= $pagination->previous()['pageName'] ?></span>
             </li>
         <?php else: ?>
             <li>
-                <a aria-label="previous" href="<?= $pagination->previous()->pathFor() ?>">
-                    <span aria-hidden="true"><?= $pagination->previous()->getPageName() ?></span>
+                <a aria-label="previous" href="<?= $pagination->previous()['pathFor'] ?>">
+                    <span aria-hidden="true"><?= $pagination->previous()['pageName'] ?></span>
                 </a>
             </li>
         <?php endif ?>
         <?php foreach ($pagination as $page): ?>
-            <?php /** @var $page Xandros15\SlimPagination\PageInterface */ ?>
-            <?php if ($page->isSlider()): ?>
+            <?php if ($page['isSlider']): ?>
                 <li class="disabled">
-                    <span><?= $page->getPageName() ?></span>
+                    <span><?= $page['pageName'] ?></span>
                 </li>
-            <?php elseif ($page->isCurrent()): ?>
+            <?php elseif ($page['isCurrent']): ?>
                 <li class="active">
-                    <span><?= $page->getPageName() ?></span>
+                    <span><?= $page['pageName'] ?></span>
                 </li>
             <?php else: ?>
                 <li>
-                    <a href="<?= $page->pathFor() ?>"><?= $page->getPageName() ?></a>
+                    <a href="<?= $page['pathFor'] ?>"><?= $page['pageName'] ?></a>
                 </li>
             <?php endif; ?>
         <?php endforeach; ?>
-        <?php if ($pagination->next()->isCurrent()): ?>
+        <?php if ($pagination->next()['isCurrent']): ?>
             <li class="disabled">
-                <span><?= $pagination->next()->getPageName() ?></span>
+                <span><?= $pagination->next()['pageName'] ?></span>
             </li>
         <?php else: ?>
             <li>
-                <a aria-label="next" href="<?= $pagination->next()->pathFor() ?>">
-                    <span aria-hidden="true"><?= $pagination->next()->getPageName() ?></span>
+                <a aria-label="next" href="<?= $pagination->next()['pathFor'] ?>">
+                    <span aria-hidden="true"><?= $pagination->next()['pageName'] ?></span>
                 </a>
             </li>
         <?php endif ?>
@@ -84,32 +83,32 @@ Them render if via template manager.
         <ul class="pagination">
             {% if pagination.previous.isCurrent %}
                 <li class="disabled">
-                    <span>{{ pagination.previous.getPageName() | raw }}</span>
+                    <span>{{ pagination.previous.pageName | raw }}</span>
                 </li>
             {% else %}
                 <li>
                     <a aria-label="previous" href="{{ pagination.previous.pathFor }}">
-                        <span aria-hidden="true">{{ pagination.previous.getPageName() | raw }}</span>
+                        <span aria-hidden="true">{{ pagination.previous.pageName | raw }}</span>
                     </a>
                 </li>
             {% endif %}
             {% for page in pagination %}
-                {% if page.isSlider() %}
-                    <li class="disabled"><span>{{ page.getPageName() }}</span></li>
-                {% elseif page.isCurrent() %}
-                    <li class="active"><span>{{ page.getPageName() }}</span></li>
+                {% if page.isSlider %}
+                    <li class="disabled"><span>{{ page.pageName }}</span></li>
+                {% elseif page.isCurrent %}
+                    <li class="active"><span>{{ page.pageName }}</span></li>
                 {% else %}
-                    <li><a href="{{ page.pathFor() }}">{{ page.getPageName() }}</a></li>
+                    <li><a href="{{ page.pathFor}}">{{ page.pageName }}</a></li>
                 {% endif %}
             {% endfor %}
             {% if pagination.next.isCurrent %}
                 <li class="disabled">
-                    <span aria-hidden="true">{{ pagination.next.getPageName() | raw }}</span>
+                    <span aria-hidden="true">{{ pagination.next.pageName | raw }}</span>
                 </li>
             {% else %}
                 <li>
                     <a aria-label="next" href="{{ pagination.next.pathFor }}">
-                        <span aria-hidden="true">{{ pagination.next.getPageName() | raw }}</span>
+                        <span aria-hidden="true">{{ pagination.next.pageName | raw }}</span>
                     </a>
                 </li>
             {% endif %}
@@ -123,23 +122,63 @@ Them render if via template manager.
 | Name  | Info | Default | More |
 |---|---|---|---|
 | `Pagination::OPT_TOTAL` | set to total of items | (int) 1 |-|
-| `Pagination::OPT_PARAM_NAME` | set param name | (string) page |example ?page=2 or /page/2|
-| `Pagination::OPT_PARAM_TYPE` | set param type (e.g via query or attribute) | (const) Page::QUERY | query for ?page=2 attribute for /page/2 |
+| `Pagination::OPT_PARAM_NAME` | set param name | (string) `page` | `?page=2` or route `/[{page:\d+}]` has param name: `page`|
+| `Pagination::OPT_PARAM_TYPE` | set param type (e.g via query or attribute) | `PageList::PAGE_QUERY` | `PageList::PAGE_QUERY` for: `?page=2` <br> `PageList::PAGE_ATTRIBUTE` for: `/page/2` |
 | `Pagination::OPT_PER_PAGE` | set how many items should be show on one page | (int) 10 |-|
 | `Pagination::OPT_SIDE_LENGTH` | set how many buttons should be show before slider | (int) 3 |-|
-| `Pagination::OPT_LIST_TYPE` | set type of list | (const) PageList::NORMAL |-|
+| `Pagination::OPT_LIST_TYPE` | set type of list | `PageList::NORMAL` | available:<br>`PageList::NORMAL`;<br>`PageList::MINI`<br>`PageList::NONE` |
 
-## Methods
+### PageList Type:
 
-### PageInterface
+`PageList::NORMAL` is normal pagination with slider:
 
-`pathFor()` - returning path for this page
+![normal](https://cloud.githubusercontent.com/assets/10834079/16358420/a936bb66-3b12-11e6-84b2-01f643e748c8.png)
 
-`isCurrent()` - check if this page is current
+ `PageList::MINI` is minimalistic pagination:
+ 
+![mini](https://cloud.githubusercontent.com/assets/10834079/16358438/f3a806fa-3b12-11e6-9604-2caa16e80c86.png)
 
-`getPageName()` - returning page name (e.g. number)
+can be created by simple code: 
 
-`isSlider()` - check if this page is slider
+#### twig
+
+```twig 
+{% for page in pagination %}
+    {% if page.isCurrent %}
+        <li class="disabled"><span>{{ page.pageName }}</span></li>
+    {% else %}
+        <li><a href="{{ page.pathFor }}">{{ page.pageName }}</a></li>
+    {% endif %}
+{% endfor %}
+```
+#### php
+```php
+<?php foreach ($pagination as $page): ?>
+    <?php if ($page['isCurrent']): ?>
+        <li class="disabled">
+            <span><?= $page['pageName'] ?></span>
+        </li>
+    <?php else: ?>
+        <li>
+            <a href="<?= $page['pathFor'] ?>"><?= $page['pageName'] ?></a>
+        </li>
+    <?php endif; ?>
+<?php endforeach; ?>
+```
+
+ `PageList::NONE` turns off pagination
+ 
+## Methods and Attributes
+
+### Page 
+
+`pathFor` - returning path for this page
+
+`isCurrent` - check if this page is current
+
+`pageName` - returning page name (e.g. number)
+
+`isSlider` - check if this page is slider
 
 ### Pagination
 
@@ -154,11 +193,11 @@ Them render if via template manager.
 `canCreate()` - checking if pagination can be create
 
 `toArray()` - returning array of defined params:
-     - per_page: how many items on one page
-     - current_page: number of current page
-     - next_page_url: path for next page
-     - prev_page_url: path for previous page
-     - from: number of first item
-     - to: number of last item
+* per_page: how many items on one page
+* current_page: number of current page
+* next_page_url: path for next page
+* prev_page_url: path for previous page
+* from: number of first item
+* to: number of last item
 
 `toJson()` - same as toArray(), just compile to json string
