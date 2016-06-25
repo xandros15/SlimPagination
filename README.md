@@ -165,11 +165,11 @@ Them render if via template manager.
 `canCreate()` - checking if pagination can be create
 
 `toArray()` - returning array of defined params:
-     - per_page: how many items on one page
-     - current_page: number of current page
-     - next_page_url: path for next page
-     - prev_page_url: path for previous page
-     - from: number of first item
-     - to: number of last item
+* per_page: how many items on one page
+* current_page: number of current page
+* next_page_url: path for next page
+* prev_page_url: path for previous page
+* from: number of first item
+* to: number of last item
 
 `toJson()` - same as toArray(), just compile to json string
