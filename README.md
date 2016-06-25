@@ -131,9 +131,11 @@ Them render if via template manager.
 ### PageList Type:
 
 `PageList::NORMAL` is normal pagination with slider:
+
 ![normal](https://cloud.githubusercontent.com/assets/10834079/16358420/a936bb66-3b12-11e6-84b2-01f643e748c8.png)
 
  `PageList::MINI` is minimalistic pagination:
+ 
 ![mini](https://cloud.githubusercontent.com/assets/10834079/16358438/f3a806fa-3b12-11e6-9604-2caa16e80c86.png)
  
  `PageList::NONE` turns off pagination
