@@ -122,7 +122,7 @@ Them render if via template manager.
 | Name  | Info | Default | More |
 |---|---|---|---|
 | `Pagination::OPT_TOTAL` | set to total of items | (int) 1 |-|
-| `Pagination::OPT_PARAM_NAME` | set param name | (string) `page` |example `?page=2` or route: `/[{page:\d+}]` has param name: `page`|
+| `Pagination::OPT_PARAM_NAME` | set param name | (string) `page` | `?page=2` or route `/[{page:\d+}]` has param name: `page`|
 | `Pagination::OPT_PARAM_TYPE` | set param type (e.g via query or attribute) | `PageList::PAGE_QUERY` | `PageList::PAGE_QUERY` for this build `?page=2`, `PageList::PAGE_ATTRIBUTE` for this build `/page/2` |
 | `Pagination::OPT_PER_PAGE` | set how many items should be show on one page | (int) 10 |-|
 | `Pagination::OPT_SIDE_LENGTH` | set how many buttons should be show before slider | (int) 3 |-|
