@@ -122,8 +122,8 @@ class Pagination implements \IteratorAggregate
 
         $options = array_merge($default, $options);
 
-        if (filter_var($options[self::OPT_TOTAL], FILTER_VALIDATE_INT) === false || $options[self::OPT_TOTAL] <= 0) {
-            throw new \InvalidArgumentException('option `OPT_TOTAL` must be int and greater than 0');
+        if (filter_var($options[self::OPT_TOTAL], FILTER_VALIDATE_INT) === false || $options[self::OPT_TOTAL] < 0) {
+            throw new \InvalidArgumentException('option `OPT_TOTAL` must be int and greater or equal 0');
         }
 
         if (!is_scalar($options[self::OPT_PARAM_NAME]) && !method_exists($options[self::OPT_PARAM_NAME],
