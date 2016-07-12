@@ -39,6 +39,32 @@ class PageList extends Collection
     }
 
     /**
+     * Retrieve an external iterator
+     * @link http://php.net/manual/en/iteratoraggregate.getiterator.php
+     * @return \Traversable An instance of an object implementing <b>Iterator</b> or
+     * <b>Traversable</b>
+     * @since 5.0.0
+     */
+    public function getIterator()
+    {
+        return new \ArrayIterator($this->get('list', []));
+    }
+
+    /**
+     * Count elements of an object
+     * @link http://php.net/manual/en/countable.count.php
+     * @return int The custom count as an integer.
+     * </p>
+     * <p>
+     * The return value is cast to an integer.
+     * @since 5.1.0
+     */
+    public function count()
+    {
+        return count($this->get('list'));
+    }
+
+    /**
      * init pages
      *
      * @param array $params
@@ -187,15 +213,24 @@ class PageList extends Collection
      * @param $params
      * @param $totalSpace
      */
-    private function compileNormalList($params, $totalSpace)
+    private function compileNormalList(array $params, $totalSpace)
     {
-        if ($params['current'] <= $totalSpace) {
+        if ($totalSpace > $params['lastPage']) {
+            $this->compileFullList($params);
+        } elseif ($params['current'] <= $totalSpace) {
             $this->compileLeftList($params, $totalSpace);
         } elseif ($params['current'] > ($params['lastPage'] - $totalSpace)) {
             $this->compileRightList($params, $totalSpace);
         } else {
             $this->compileAdjacentList($params, (int) $totalSpace / 2);
         }
+    }
+
+    private function compileFullList(array $params)
+    {
+        $this->set('list',
+            $this->getRangePages(['start' => self::FIRST_PAGE, 'end' => $params['lastPage']], $params)
+        );
     }
 
     /**
@@ -287,31 +322,5 @@ class PageList extends Collection
         $list[] = $this->createSliderPage();
         $list[] = $this->get('last');
         $this->set('list', $list);
-    }
-
-    /**
-     * Retrieve an external iterator
-     * @link http://php.net/manual/en/iteratoraggregate.getiterator.php
-     * @return \Traversable An instance of an object implementing <b>Iterator</b> or
-     * <b>Traversable</b>
-     * @since 5.0.0
-     */
-    public function getIterator()
-    {
-        return new \ArrayIterator($this->get('list', []));
-    }
-
-    /**
-     * Count elements of an object
-     * @link http://php.net/manual/en/countable.count.php
-     * @return int The custom count as an integer.
-     * </p>
-     * <p>
-     * The return value is cast to an integer.
-     * @since 5.1.0
-     */
-    public function count()
-    {
-        return count($this->get('list'));
     }
 }
