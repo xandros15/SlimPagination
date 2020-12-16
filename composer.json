@@ -21,7 +21,7 @@
     },
     "require-dev": {
         "symfony/var-dumper": "^3.1",
-        "Slim/twig-view": "^2.1",
+      "slim/twig-view": "^2.1",
         "slim/php-view": "^2.1"
     }
 }
