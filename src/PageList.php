@@ -215,7 +215,7 @@ class PageList extends Collection
      */
     private function compileNormalList(array $params, $totalSpace)
     {
-        if ($totalSpace > $params['lastPage']) {
+        if ($totalSpace >= $params['lastPage']) {
             $this->compileFullList($params);
         } elseif ($params['current'] <= $totalSpace) {
             $this->compileLeftList($params, $totalSpace);
